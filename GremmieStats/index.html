@@ -36,7 +36,7 @@
       }
 
       function pullWebserverData(){
-        var url = 'https://18.220.203.155:3000/data';
+        var url = 'http://18.220.203.155:3000/data';
         var xhr = createCORSRequest('GET', url);
         if (!xhr) {
           throw new Error('CORS not supported');
