@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
   <body>
+
     <h1>GremmieSealBot GremmieStats!</h1>
     <h2>GSB User stats</h2>
     <button type="button" name="getData" onclick="pullWebserverData()">get data!</button>
@@ -33,7 +36,7 @@
       }
 
       function pullWebserverData(){
-        var url = 'http://18.220.203.155:3000/data';
+        var url = 'https://18.220.203.155:3000/data';
         var xhr = createCORSRequest('GET', url);
         if (!xhr) {
           throw new Error('CORS not supported');
