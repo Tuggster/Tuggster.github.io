@@ -3,13 +3,14 @@
   <body>
     <h1>GremmieSealBot GremmieStats!</h1>
     <h2>GSB User stats</h2>
+    <button type="button" name="getData" onclick="pullWebserverData()">get data!</button>
 
     <script type="text/javascript">
-      $('.my_selector').click(function(){
+      pullWebserverData(){
        $.get('http://18.220.203.155:3000/data', {}, function(data){
             alert(`data recieved: ` + data);
        });
-      });
+      }
     </script>
 
     <a href="../index.html">Want to go home?</a>
