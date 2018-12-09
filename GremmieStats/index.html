@@ -6,7 +6,7 @@
     <button type="button" name="getData" onclick="pullWebserverData()">get data!</button>
 
     <script type="text/javascript">
-      pullWebserverData(){
+      pullWebserverData = function(){
        $.get('http://18.220.203.155:3000/data', {}, function(data){
             alert(`data recieved: ` + data);
        });
