@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html>
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
   <body>
 
     <h1>GremmieSealBot GremmieStats!</h1>
@@ -11,7 +9,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
 
-      var button = document.getElementById("getData");
 
       var createCORSRequest = function(method, url) {
         var xhr = new XMLHttpRequest();
@@ -37,9 +34,10 @@
 
         xhr.onload = function() {
          var responseText = xhr.responseText;
-         buton.setAttribute('content', responseText);
+         alert("Incoming message from NASA! Here you go: " + responseText)
         };
 
+        xhr.withCredentials = false;
         xhr.send();
       }
     </script>
