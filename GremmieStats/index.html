@@ -11,41 +11,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
 
-    function createCORSRequest(method, url) {
+      var button = document.getElementById("getData");
+
+      var createCORSRequest = function(method, url) {
         var xhr = new XMLHttpRequest();
         if ("withCredentials" in xhr) {
-
-          // Check if the XMLHttpRequest object has a "withCredentials" property.
-          // "withCredentials" only exists on XMLHTTPRequest2 objects.
+          // Most browsers.
           xhr.open(method, url, true);
-
         } else if (typeof XDomainRequest != "undefined") {
-
-          // Otherwise, check if XDomainRequest.
-          // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+          // IE8 & IE9
           xhr = new XDomainRequest();
           xhr.open(method, url);
-
         } else {
-
-          // Otherwise, CORS is not supported by the browser.
+          // CORS not supported.
           xhr = null;
-
         }
         return xhr;
-      }
+      };
 
       function pullWebserverData(){
-        var url = 'http://18.220.203.155:3000/data';
-        var xhr = createCORSRequest('GET', url);
+        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data');
         if (!xhr) {
           throw new Error('CORS not supported');
         }
 
         xhr.onload = function() {
          var responseText = xhr.responseText;
-         console.log(responseText);
-         // process the response.
+         buton.setAttribute('content', responseText);
         };
 
         xhr.send();
