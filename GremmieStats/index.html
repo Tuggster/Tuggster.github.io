@@ -4,7 +4,11 @@
 
     <h1>GremmieSealBot GremmieStats!</h1>
     <h2>GSB User stats</h2>
+    <input type="text" id="userIDBox" placeholder="Place your user ID here!">
     <button type="button" name="getData" onclick="pullWebserverData()">get data!</button>
+    <br>
+    <p id="dataDisplay">Data will show here.</p>
+    <br>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
@@ -27,17 +31,31 @@
       };
 
       function pullWebserverData(){
-        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data');
+        var idBox = document.getElementById("userIDBox");
+        var dataBox = document.getElementById("dataDisplay");
+
+        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?id='+idBox.value, {user: idBox});
         if (!xhr) {
           throw new Error('CORS not supported');
         }
 
         xhr.onload = function() {
          var responseText = xhr.responseText;
-         alert("Incoming message from NASA! Here you go: " + responseText)
+
+         var data;
+
+         try {
+           var responseJSON = JSON.parse(responseText);
+           data  = "Sent: " + responseJSON[`sent`] + ". Received: " + responseJSON[`received`];
+         } catch (e) {
+           data = "Error: " + responseText;
+         }
+
+         dataBox.innerHTML = data;
         };
 
         xhr.withCredentials = false;
+        xhr.setRequestHeader('Access-Control-Allow-Headers', 'window.location.href');
         xhr.send();
       }
     </script>
