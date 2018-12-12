@@ -75,11 +75,11 @@
         if (myID == "" || myID == undefined) {
           var input = prompt("It appears you haven't set your ID, if you want us to show your stats on the homepage, please enter it here, if not, type \"no\".");
 
-          if (input != `no` && typeof parseInt(input, 10) != undefined) {
-            document.cookie = `myDiscordID=${[input]}`;
-          }
 
+          document.cookie = `myDiscordID=${[input]}`;
         }
+        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID);
+
       };
 
 
@@ -98,8 +98,7 @@
         }
         return xhr;
       };
-      
-      var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID);
+
 
 
 
