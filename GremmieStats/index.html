@@ -1,18 +1,57 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <style>
+  h1 {
+    font-family: fantasy;
+    font-size: 100;
+    font-style: italic;
+  }
+
+  h2 {
+    font-family: monospace;
+  }
+
+  a {
+    font-style: italic;
+  }
+
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  </style>
+</head>
   <body>
 
     <h1>GremmieSealBot GremmieStats!</h1>
     <h2>GSB User stats</h2>
-    <input type="text" id="userIDBox" placeholder="Place your user ID here!">
-    <button type="button" name="getData" onclick="pullWebserverData()">get data!</button>
-    <br>
-    <p id="dataDisplay">Data will show here.</p>
+    <table id="dataTable">
+      <tr>
+        <th>Name</th>
+        <th>Seals Sent</th>
+        <th>Seals received</th>
+      </tr>
+    </table>
     <br>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
 
+      window.onload = function() {
+        pullData();
+      };
 
       var createCORSRequest = function(method, url) {
         var xhr = new XMLHttpRequest();
@@ -30,11 +69,11 @@
         return xhr;
       };
 
-      function pullWebserverData(){
+      function pullData(){
         var idBox = document.getElementById("userIDBox");
-        var dataBox = document.getElementById("dataDisplay");
+        var table = document.getElementById("dataTable");
 
-        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?id='+idBox.value, {user: idBox});
+        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data', {user: idBox});
         if (!xhr) {
           throw new Error('CORS not supported');
         }
@@ -46,12 +85,18 @@
 
          try {
            var responseJSON = JSON.parse(responseText);
-           data  = "Sent: " + responseJSON[`sent`] + ". Received: " + responseJSON[`received`];
+           data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
          } catch (e) {
            data = "Error: " + responseText;
          }
+         //Username: ${responseJSON[`name`]} --
+         for (let i = 0; i < responseJSON.names.length; i++) {
+           var newRow = dataTable.insertRow(1);
+           newRow.insertCell(0).innerHTML = responseJSON[`names`][i];
+           newRow.insertCell(1).innerHTML = responseJSON[`sent`][i];
+           newRow.insertCell(2).innerHTML = responseJSON[`receieved`][i];
+         }
 
-         dataBox.innerHTML = data;
         };
 
         xhr.withCredentials = false;
