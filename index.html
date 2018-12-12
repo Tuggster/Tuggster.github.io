@@ -64,11 +64,9 @@
       var scorePing = document.getElementById("overviewPing");
 
       var myID = 234523452345234523452345234523452345;
-
+      var xhr;
       window.onload = function() {
-        if (!xhr) {
-          throw new Error('CORS not supported');
-        }
+
 
         myID = getCookie(`myDiscordID`);
         console.log(myID);
@@ -79,6 +77,46 @@
           document.cookie = `myDiscordID=${[input]}`;
           myID = input;
         }
+
+        xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID.toString());
+
+        
+        xhr.onload = function() {
+         var responseText = xhr.responseText;
+
+         var data;
+
+         try {
+           var responseJSON = JSON.parse(responseText);
+           data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
+         } catch (e) {
+           data = "Error: " + responseText;
+         }
+
+         console.log(data);
+         var newRow = scoreTable.insertRow(1);
+         newRow.insertCell(0).innerHTML = responseJSON[`name`];
+         newRow.insertCell(1).innerHTML = responseJSON[`sent`];
+         newRow.insertCell(2).innerHTML = responseJSON[`receieved`];
+
+         overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
+
+        };
+
+        xhr.withCredentials = false;
+        xhr.setRequestHeader('Access-Control-Allow-Headers', window.location.href);
+
+        try {
+          xhr.send();
+        } catch (e) {
+          dataBox.innerHTML = "Request processed but data not sent! " + e;
+        }
+
+
+      if (!xhr) {
+        throw new Error('CORS not supported');
+      }
+
 
       };
 
@@ -98,41 +136,6 @@
         }
         return xhr;
       };
-
-      var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID.toString());
-
-
-
-      xhr.onload = function() {
-       var responseText = xhr.responseText;
-
-       var data;
-
-       try {
-         var responseJSON = JSON.parse(responseText);
-         data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
-       } catch (e) {
-         data = "Error: " + responseText;
-       }
-
-       console.log(data);
-       var newRow = scoreTable.insertRow(1);
-       newRow.insertCell(0).innerHTML = responseJSON[`name`];
-       newRow.insertCell(1).innerHTML = responseJSON[`sent`];
-       newRow.insertCell(2).innerHTML = responseJSON[`receieved`];
-
-       overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
-
-      };
-
-      xhr.withCredentials = false;
-      xhr.setRequestHeader('Access-Control-Allow-Headers', window.location.href);
-
-      try {
-        xhr.send();
-      } catch (e) {
-        dataBox.innerHTML = "Request processed but data not sent! " + e;
-      }
     </script>
 
     <h3>Menu</h3>
