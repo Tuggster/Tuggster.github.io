@@ -126,7 +126,7 @@
       }
 
       function selectSeal(seal) {
-        var xhr = createCORSRequest('POST', `http://18.220.203.155:3000/data?req=setseal&seal=${seal}s&user=${myID}`);
+        var xhr = createCORSRequest('POST', `http://18.220.203.155:3000/data?req=setseal&seal=${seal}&user=${myID}`);
 
         if (!xhr) {
           throw new Error('CORS not supported');
@@ -141,7 +141,7 @@
 
         xhr.withCredentials = false;
         xhr.setRequestHeader('Access-Control-Allow-Headers', 'window.location.href');
-        
+
         try {
           xhr.send();
         } catch (e) {
