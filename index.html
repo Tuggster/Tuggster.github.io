@@ -62,7 +62,7 @@
 
       var scoreTable = document.getElementById("overviewScore");
       var scorePing = document.getElementById("overviewPing");
-      var xhr;
+
       var myID;
 
       window.onload = function() {
@@ -78,7 +78,6 @@
 
           document.cookie = `myDiscordID=${[input]}`;
         }
-        xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID);
 
       };
 
@@ -99,6 +98,7 @@
         return xhr;
       };
 
+      var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID);
 
 
 
