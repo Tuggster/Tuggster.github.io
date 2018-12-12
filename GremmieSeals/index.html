@@ -148,13 +148,13 @@
 
           xhr.withCredentials = false;
           xhr.setRequestHeader('Access-Control-Allow-Headers', 'window.location.href');
-
-          try {
-            xhr.send();
-          } catch (e) {
-            dataBox.innerHTML = "Request processed but data not sent! " + e;
-          }
         }
+        try {
+          xhr.send();
+        } catch (e) {
+          dataBox.innerHTML = "Request processed but data not sent! " + e;
+        }
+
       }
     </script>
 
