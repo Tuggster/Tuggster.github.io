@@ -141,15 +141,14 @@
           if (feedback != "success!") {
             console.log("setSeal failed!");
             alert(`Couldn't set seal: ${feedback}`);
+          } else {
+            alert(`Request completed! ${feedback}`);
           }
-
-          alert(`Request completed! ${feedback}`);
-
-
-          xhr.withCredentials = false;
-          xhr.setRequestHeader('Access-Control-Allow-Headers', 'window.location.href');
         }
         try {
+          xhr.withCredentials = false;
+          xhr.setRequestHeader('Access-Control-Allow-Headers', 'window.location.href');
+
           xhr.send();
         } catch (e) {
           dataBox.innerHTML = "Request processed but data not sent! " + e;
