@@ -138,10 +138,13 @@
         xhr.onload = function() {
           var feedback = xhr.response;
 
-          if (feedback != "success!")
+          if (feedback != "success!") {
             console.log("setSeal failed!");
             alert(`Couldn't set seal: ${feedback}`);
         }
+
+        alert(`Request completed! ${feedback}`);
+
 
         xhr.withCredentials = false;
         xhr.setRequestHeader('Access-Control-Allow-Headers', 'window.location.href');
