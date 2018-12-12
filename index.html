@@ -11,15 +11,135 @@
     a {
       font-style: italic;
     }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 20%;
+    }
+
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
     </style>
   </head>
   <body>
     <h1>GremmieSealBot web portal!</h1>
-    <p>Welcome to the beta web portal for GremmieSealBot.</p>
+    <h2>Welcome to the beta web portal for GremmieSealBot.</h2>
 
-    <a href="/GremmieStats/index.html">GremmieStats page</a>
-    <!-- <script type="text/javascript">
-      alert("Testing, 123!");
-    </script> -->
+    <h3>Overview</h3>
+    <p id="overviewPing">Ping: Please wait</p>
+    <p>Your personal leaderboards:</p>
+    <table id="overviewScore">
+      <tr>
+        <th>Name</th>
+        <th>Sent</th>
+        <th>Receieved</th>
+      </tr>
+    </table>
+
+    <script type="text/javascript">
+      function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      var scoreTable = document.getElementById("overviewScore");
+      var scorePing = document.getElementById("overviewPing");
+
+      var myID;
+
+      window.onload = function() {
+        if (!xhr) {
+          throw new Error('CORS not supported');
+        }
+
+        myID = getCookie(`myDiscordID`);
+
+        if (myID == "" || myID == undefined) {
+          var input = prompt("It appears you haven't set your ID, if you want us to show your stats on the homepage, please enter it here, if not, type \"no\".");
+
+          if (input != `no` && typeof parseInt(input, 10) != undefined) {
+            document.cookie = `myDiscordID=${[input]}`;
+          }
+
+        }
+      };
+
+
+      var createCORSRequest = function(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Most browsers.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+      
+      var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID);
+
+
+
+      xhr.onload = function() {
+       var responseText = xhr.responseText;
+
+       var data;
+
+       try {
+         var responseJSON = JSON.parse(responseText);
+         data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
+       } catch (e) {
+         data = "Error: " + responseText;
+       }
+
+       console.log(data);
+       var newRow = scoreTable.insertRow(1);
+       newRow.insertCell(0).innerHTML = responseJSON[`name`];
+       newRow.insertCell(1).innerHTML = responseJSON[`sent`];
+       newRow.insertCell(2).innerHTML = responseJSON[`receieved`];
+
+       overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
+
+      };
+
+      xhr.withCredentials = false;
+      xhr.setRequestHeader('Access-Control-Allow-Headers', window.location.href);
+
+      try {
+        xhr.send();
+      } catch (e) {
+        dataBox.innerHTML = "Request processed but data not sent! " + e;
+      }
+    </script>
+
+    <h3>Menu</h3>
+
+    <a href="GremmieStats/index.html">GremmieStats page</a>
+    <br>
+    <a href="GremmieInfo/index.html">GremmieInfo page</a>
+
   </body>
 </html>

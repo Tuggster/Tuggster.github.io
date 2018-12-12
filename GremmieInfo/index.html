@@ -19,7 +19,7 @@
   table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 25%;
+    width: 100%;
   }
 
   td, th {
@@ -34,19 +34,15 @@
   </style>
 </head>
   <body>
+    <h1>GremmieSealBot GremmieInfo page!</h1>
+    <h2>See what's up with GSB!</h2>
 
-    <h1>GremmieSealBot GremmieStats!</h1>
-    <h2>GSB User stats</h2>
-    <table id="dataTable">
-      <tr>
-        <th>Name</th>
-        <th>Seals Sent</th>
-        <th>Seals received</th>
-      </tr>
-    </table>
-    <br>
+    <p id="ping">Ping: Please wait.</p>
+    <p id="users">User count: Please wait.</p>
+    <p id="servers">Server count: Please wait.</p>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <a href="../index.html">Want to go home?</a>
+
     <script type="text/javascript">
 
       window.onload = function() {
@@ -70,10 +66,11 @@
       };
 
       function pullData(){
-        var idBox = document.getElementById("userIDBox");
-        var table = document.getElementById("dataTable");
+        var pingBox = document.getElementById("ping");
+        var usersBox = document.getElementById("users");
+        var serversBox = document.getElementById("servers");
 
-        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=stats');
+        var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=info');
         if (!xhr) {
           throw new Error('CORS not supported');
         }
@@ -89,13 +86,9 @@
          } catch (e) {
            data = "Error: " + responseText;
          }
-         //Username: ${responseJSON[`name`]} --
-         for (let i = 0; i < responseJSON.names.length; i++) {
-           var newRow = dataTable.insertRow(1);
-           newRow.insertCell(0).innerHTML = responseJSON[`names`][i];
-           newRow.insertCell(1).innerHTML = responseJSON[`sent`][i];
-           newRow.insertCell(2).innerHTML = responseJSON[`receieved`][i];
-         }
+         pingBox.innerHTML = "Ping: " + responseJSON[`ping`] + " ms.";
+         usersBox.innerHTML = "User count: " + responseJSON[`userCount`] + " unique users.";
+         serversBox.innerHTML = "Server count: " + responseJSON[`serverCount`] + " servers.";
 
         };
 
@@ -109,8 +102,6 @@
         }
       }
     </script>
-
-    <a href="../index.html">Want to go home?</a>
 
   </body>
 </html>
