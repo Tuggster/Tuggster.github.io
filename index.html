@@ -4,6 +4,95 @@
     <title>GSB Web - Home</title>
 
     <style media="screen">
+    /* Add a black background color to the top navigation */
+    .topnav {
+      background-color: #333;
+      overflow: hidden;
+    }
+
+    /* Style the links inside the navigation bar */
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    /* Change the color of links on hover */
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    /* Add a color to the active/current link */
+    .topnav a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .navbar {
+      overflow: hidden;
+      background-color: #333;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .navbar a {
+      float: left;
+      font-size: 16px;
+      color: white;
+      text-align: center;
+      padding: 0px 0px;
+      text-decoration: none;
+    }
+
+    .dropdown {
+      float: left;
+      overflow: hidden;
+    }
+
+    .dropdown .dropbtn {
+      font-size: 16px;
+      border: none;
+      outline: none;
+      color: white;
+      padding: 14px 16px;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+    }
+
+    .navbar a:hover, .dropdown:hover .dropbtn {
+      background-color: red;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      float: none;
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
     #myDIV {
       width: 100%;
       margin-top: 5px;
@@ -31,15 +120,32 @@
     </style>
   </head>
   <body>
-    <h1 class="title">GremmieSealBot web portal!</h1>
-    <h2>Welcome to the beta web portal for GremmieSealBot.</h2>
+
+    <div class="topnav">
+      <a class="active" href="">Home</a>
+      <a href="GremmieStats/index.html">Stats</a>
+      <a href="GremmieInfo/index.html">Info</a>
+      <a href="GremmieSeals/index.html">Seals</a>
+      <a href="GremmieSeals/index.html">Seals</a>
+      <div class="dropdown">
+        <button class="dropbtn" style="position: fixed; right: 0; text-align: right" id="signinDrop">Signed in as: Tuggi
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" style="position: fixed; right: 0; text-align: right">
+          <a onclick="signOut(true)">Switch accounts</a>
+          <a onclick="signOut(false)">Sign out</a>
+        </div>
+      </div>
+      <!-- <a onclick="signOut" style="position: fixed; right: 0; text-align: right">Signed in as: Tuggi</a> -->
+
+
+    </div>    <h2>Welcome to the beta web portal for GremmieSealBot.</h2>
     <div id="overview">
       <h3>Overview</h3>
       <p id="overviewPing">Ping: Please wait</p>
       <p>Your personal leaderboards:</p>
       <table id="overviewScore">
         <tr>
-          <th>Name</th>
           <th>Sent</th>
           <th>Receieved</th>
         </tr>
@@ -47,19 +153,10 @@
     </div>
 
 
-
-    <h3>Menu</h3>
-
-    <a href="GremmieStats/index.html">GremmieStats page</a>
-    <br>
-    <a href="GremmieInfo/index.html">GremmieInfo page</a>
-    <br>
-    <a href="GremmieSeals/index.html">GremmieSeals page</a>
-
     <div style="position: fixed; bottom: 0; width:100%; text-align: left">
       <h2 style="margin: 0">About:</h2>
       <h3 style="margin: 0">GremmieSealBot</h3>
-      <p id="credits" style="margin: 0">> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan</p>
+      <p id="credits" style="margin: 0">> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools</p>
     </div>
 
     <script type="text/javascript">
@@ -81,6 +178,8 @@
       var overviewDiv = document.getElementById("overview");
       var scoreTable = document.getElementById("overviewScore");
       var scorePing = document.getElementById("overviewPing");
+
+      var signinDrop = document.getElementById('signinDrop');
 
       var creditsText = document.getElementById("credits");
 
@@ -118,16 +217,18 @@
 
          if (myID == "no") {
            overviewDiv.style.display = "none";
+           signinDrop.innerHTML = `Not signed in.`
+
          } else {
+           signinDrop.innerHTML = `Signed in as: ${responseJSON[`name`]}`
            creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${responseJSON[`name`]}, I appreciate you checking out my project.`;
 
            overviewDiv.style.display = "block";
          }
 
          var newRow = scoreTable.insertRow(1);
-         newRow.insertCell(0).innerHTML = responseJSON[`name`];
-         newRow.insertCell(1).innerHTML = responseJSON[`sent`];
-         newRow.insertCell(2).innerHTML = responseJSON[`received`];
+         newRow.insertCell(0).innerHTML = responseJSON[`sent`];
+         newRow.insertCell(1).innerHTML = responseJSON[`received`];
 
          overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
 
@@ -143,13 +244,43 @@
         }
 
 
-      if (!xhr) {
-        throw new Error('CORS not supported');
-      }
-
+        if (!xhr) {
+          throw new Error('CORS not supported');
+        }
 
       };
 
+      function signOut(reauth) {
+        if (reauth == true) {
+          var newID = prompt("What's your new ID?");
+          newID = parseInt(newID, 10);
+
+          if (isNaN(newID) || typeof newID == "undefined")
+            return alert("Invalid ID! Please try again.");
+
+          document.cookies = `myDiscordID = ${newID}`;
+          alert(`You're all set!`);
+        } else if (reauth == false && !isNaN(myID) && !typeof myID == "undefined") {
+          document.cookies = `myDiscordID = no`;
+
+          return alert(`Successfully signed out!`);
+        } else if (reauth == false && isNaN(myID) || typeof myID == "undefined") {
+          return alert(`Looks like you weren't signed in to begin with.`);
+        }
+
+        myID = getCookie(`myDiscordID`);
+
+        if (myID == "no") {
+          overviewDiv.style.display = "none";
+          signinDrop.innerHTML = `Not signed in.`
+
+        } else {
+          signinDrop.innerHTML = `Signed in as: ${responseJSON[`name`]}`
+          creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${responseJSON[`name`]}, I appreciate you checking out my project.`;
+
+          overviewDiv.style.display = "block";
+        }
+      }
 
       var createCORSRequest = function(method, url) {
         var xhr = new XMLHttpRequest();
