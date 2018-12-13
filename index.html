@@ -222,7 +222,7 @@
 
          try {
            var responseJSON = JSON.parse(responseText);
-           data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
+           data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}. Name: ${responseJSON[`name`]}`;
          } catch (e) {
            data = "Error: " + responseText;
          }
