@@ -2,6 +2,11 @@
 <html>
   <head>
     <style media="screen">
+    #myDIV {
+      width: 100%;
+      margin-top: 5px;
+    }
+
     h1 {
       font-family: fantasy;
       font-size: 100;
@@ -32,17 +37,19 @@
   <body>
     <h1>GremmieSealBot web portal!</h1>
     <h2>Welcome to the beta web portal for GremmieSealBot.</h2>
+    <div id="overview">
+      <h3>Overview</h3>
+      <p id="overviewPing">Ping: Please wait</p>
+      <p>Your personal leaderboards:</p>
+      <table id="overviewScore">
+        <tr>
+          <th>Name</th>
+          <th>Sent</th>
+          <th>Receieved</th>
+        </tr>
+      </table>
+    </div>
 
-    <h3>Overview</h3>
-    <p id="overviewPing">Ping: Please wait</p>
-    <p>Your personal leaderboards:</p>
-    <table id="overviewScore">
-      <tr>
-        <th>Name</th>
-        <th>Sent</th>
-        <th>Receieved</th>
-      </tr>
-    </table>
 
     <script type="text/javascript">
       function getCookie(cname) {
@@ -60,6 +67,7 @@
         return "";
       }
 
+      var overviewDiv = document.getElementById("overview");
       var scoreTable = document.getElementById("overviewScore");
       var scorePing = document.getElementById("overviewPing");
 
@@ -73,9 +81,14 @@
         if (myID == "" || myID == undefined) {
           var input = prompt("It appears you haven't set your ID, if you want us to show your stats on the homepage, please enter it here, if not, type \"no\".");
 
-
           document.cookie = `myDiscordID=${[input]}`;
           myID = input;
+        }
+
+        if (myID == "no") {
+          overviewDiv.style.display = "none";
+        } else {
+          overviewDiv.style.display = "block";
         }
 
         xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID.toString());
