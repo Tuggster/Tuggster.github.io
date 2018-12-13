@@ -209,7 +209,6 @@
 
          var data;
 
-         name = responseJSON[`name`];
 
          try {
            var responseJSON = JSON.parse(responseText);
@@ -218,6 +217,7 @@
            data = "Error: " + responseText;
          }
 
+         name = responseJSON[`name`];
          console.log(data);
 
          if (myID == "no") {
