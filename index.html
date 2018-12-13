@@ -188,6 +188,16 @@
 
       var overviewJSON;
 
+      function reloadOverview() {
+        scoreTable.deleteRow(1);
+
+        var newRow = scoreTable.insertRow(1);
+        newRow.insertCell(0).innerHTML = responseJSON[`sent`];
+        newRow.insertCell(1).innerHTML = responseJSON[`received`];
+
+        overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
+      }
+
       window.onload = function() {
 
 
@@ -220,22 +230,19 @@
          overviewJSON = responseJSON;
          console.log(data);
 
+         reloadOverview();
+
          if (myID == "no") {
            overviewDiv.style.display = "none";
            signinDrop.innerHTML = `Not signed in.`
 
          } else {
-           signinDrop.innerHTML = `Signed in as: ${name}`
-           creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${name}, I appreciate you checking out my project.`;
+           signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`
+           creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${overviewJSON[`name`]}, I appreciate you checking out my project.`;
 
            overviewDiv.style.display = "block";
          }
 
-         var newRow = scoreTable.insertRow(1);
-         newRow.insertCell(0).innerHTML = responseJSON[`sent`];
-         newRow.insertCell(1).innerHTML = responseJSON[`received`];
-
-         overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
 
         };
 
@@ -281,6 +288,8 @@
           var responseJSON = JSON.parse(xhr.responseText);
 
           overviewJSON = responseJSON;
+
+          reloadOverview();
 
           signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;
           creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools` + `\<br\>> Thanks, ${overviewJSON[`name`]}, I appreciate you checking out my project.`;
