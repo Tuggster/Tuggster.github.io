@@ -189,7 +189,8 @@
       var overviewJSON;
 
       function reloadOverview() {
-        scoreTable.deleteRow(1);
+        if (scoreTable.rows.length > 1)
+          scoreTable.deleteRow(1);
 
         var newRow = scoreTable.insertRow(1);
         newRow.insertCell(0).innerHTML = responseJSON[`sent`];
