@@ -256,8 +256,9 @@
       };
 
       function signOut(reauth) {
+        var newID
         if (reauth == true) {
-          var newID = prompt("What's your new ID?");
+          newID = prompt("What's your new ID?");
           newID = parseInt(newID, 10);
 
           if (isNaN(newID) || typeof newID == "undefined")
