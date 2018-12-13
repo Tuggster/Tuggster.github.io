@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>GSB Web - Home</title>
+
     <style media="screen">
     #myDIV {
       width: 100%;
       margin-top: 5px;
-    }
-
-    h1 {
-      font-family: fantasy;
-      font-size: 100;
-      font-style: italic;
     }
 
     a {
@@ -35,7 +31,7 @@
     </style>
   </head>
   <body>
-    <h1>GremmieSealBot web portal!</h1>
+    <h1 class="title">GremmieSealBot web portal!</h1>
     <h2>Welcome to the beta web portal for GremmieSealBot.</h2>
     <div id="overview">
       <h3>Overview</h3>
@@ -50,6 +46,21 @@
       </table>
     </div>
 
+
+
+    <h3>Menu</h3>
+
+    <a href="GremmieStats/index.html">GremmieStats page</a>
+    <br>
+    <a href="GremmieInfo/index.html">GremmieInfo page</a>
+    <br>
+    <a href="GremmieSeals/index.html">GremmieSeals page</a>
+
+    <div style="position: fixed; bottom: 0; width:100%; text-align: left">
+      <h2 style="margin: 0">About:</h2>
+      <h3 style="margin: 0">GremmieSealBot</h3>
+      <p id="credits" style="margin: 0">> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan</p>
+    </div>
 
     <script type="text/javascript">
       function getCookie(cname) {
@@ -71,6 +82,8 @@
       var scoreTable = document.getElementById("overviewScore");
       var scorePing = document.getElementById("overviewPing");
 
+      var creditsText = document.getElementById("credits");
+
       var myID = 0;
       var xhr;
       window.onload = function() {
@@ -85,11 +98,6 @@
           myID = input;
         }
 
-        if (myID == "no") {
-          overviewDiv.style.display = "none";
-        } else {
-          overviewDiv.style.display = "block";
-        }
 
         xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID.toString());
 
@@ -107,6 +115,15 @@
          }
 
          console.log(data);
+
+         if (myID == "no") {
+           overviewDiv.style.display = "none";
+         } else {
+           creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${responseJSON[`name`]}, I appreciate you checking out my project.`;
+
+           overviewDiv.style.display = "block";
+         }
+
          var newRow = scoreTable.insertRow(1);
          newRow.insertCell(0).innerHTML = responseJSON[`name`];
          newRow.insertCell(1).innerHTML = responseJSON[`sent`];
@@ -150,14 +167,6 @@
         return xhr;
       };
     </script>
-
-    <h3>Menu</h3>
-
-    <a href="GremmieStats/index.html">GremmieStats page</a>
-    <br>
-    <a href="GremmieInfo/index.html">GremmieInfo page</a>
-    <br>
-    <a href="GremmieSeals/index.html">GremmieSeals page</a>
 
   </body>
 </html>
