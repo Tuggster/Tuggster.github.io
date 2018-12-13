@@ -274,7 +274,7 @@
         }
 
         myID = getCookie(`myDiscordID`);
-        xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID.toString());
+        xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+newID.toString());
 
         xhr.onload = function() {
           var responseJSON = JSON.parse(xhr.responseText);
