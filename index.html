@@ -186,7 +186,7 @@
       var myID = 0;
       var xhr;
 
-      var name = '';
+      var overviewJSON;
 
       window.onload = function() {
 
@@ -217,7 +217,7 @@
            data = "Error: " + responseText;
          }
 
-         name = responseJSON[`name`];
+         overviewJSON = responseJSON;
          console.log(data);
 
          if (myID == "no") {
@@ -256,7 +256,7 @@
       };
 
       function signOut(reauth) {
-        var newID
+        var newID;
         if (reauth == true) {
           newID = prompt("What's your new ID?");
           newID = parseInt(newID, 10);
@@ -280,17 +280,14 @@
         xhr.onload = function() {
           var responseJSON = JSON.parse(xhr.responseText);
 
-          name = responseJSON[`name`];
+          overviewJSON = responseJSON;
+
+          signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;
+          creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools` + `\<br\>> Thanks, ${overviewJSON[`name`]}, I appreciate you checking out my project.`;
+          overviewDiv.style.display = "block";
         }
 
         xhr.send();
-
-
-
-        signinDrop.innerHTML = `Signed in as: ${name}`;
-        creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools` + `\<br\>> Thanks, ${name}, I appreciate you checking out my project.`;
-
-        overviewDiv.style.display = "block";
       }
 
       var createCORSRequest = function(method, url) {
