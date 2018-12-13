@@ -185,6 +185,9 @@
 
       var myID = 0;
       var xhr;
+
+      public var name = '';
+
       window.onload = function() {
 
 
@@ -206,6 +209,8 @@
 
          var data;
 
+         name = responseJSON[`name`];
+
          try {
            var responseJSON = JSON.parse(responseText);
            data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
@@ -220,8 +225,8 @@
            signinDrop.innerHTML = `Not signed in.`
 
          } else {
-           signinDrop.innerHTML = `Signed in as: ${responseJSON[`name`]}`
-           creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${responseJSON[`name`]}, I appreciate you checking out my project.`;
+           signinDrop.innerHTML = `Signed in as: ${name}`
+           creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${name}, I appreciate you checking out my project.`;
 
            overviewDiv.style.display = "block";
          }
@@ -275,8 +280,8 @@
           signinDrop.innerHTML = `Not signed in.`
 
         } else {
-          signinDrop.innerHTML = `Signed in as: ${responseJSON[`name`]}`
-          creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${responseJSON[`name`]}, I appreciate you checking out my project.`;
+          signinDrop.innerHTML = `Signed in as: ${name}`
+          creditsText.innerHTML = creditsText.innerHTML + `\<br\>> Thanks, ${name}, I appreciate you checking out my project.`;
 
           overviewDiv.style.display = "block";
         }
