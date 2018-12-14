@@ -158,7 +158,7 @@
         var signinDrop = document.getElementById('signinDrop');
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
-        xhrSync.onload() = function() {
+        xhrSync.onload = function() {
           var response = xhrSync.responseText;
           alert(response);
 
@@ -167,7 +167,7 @@
           } else {
             signinDrop.innerHTML = `Signed in: ${response}`;
           }
-        }
+        };
 
         xhrSync.send();
       }
