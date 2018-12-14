@@ -231,7 +231,7 @@
 
          reloadOverview();
 
-         if (myID == "no") {
+         if (myID == "no" || myID == "") {
            overviewDiv.style.display = "none";
            signinDrop.innerHTML = `Not signed in.`
 
@@ -296,6 +296,13 @@
 
             overviewJSON = responseJSON;
 
+            if (parseInt(prompt("Please enter your auth code."), 10) != authCode) {
+              return alert(`Incorrect code! Sign in attempt ignored.`);
+            }
+
+            document.cookies = `myDiscordID = ${newID}`;
+            alert(`You're all set! - New ID: ${newID}`);
+
             reloadOverview();
 
             signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;
@@ -305,12 +312,7 @@
 
           xhr.send();
 
-          if (parseInt(prompt("Please enter your auth code."), 10) != authCode) {
-            return alert(`Incorrect code! Sign in attempt ignored.`);
-          }
 
-          document.cookies = `myDiscordID = ${newID}`;
-          alert(`You're all set! - New ID: ${newID}`);
         }
       }
 
