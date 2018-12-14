@@ -159,21 +159,6 @@
     </div>
 
     <script type="text/javascript">
-      function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
-      }
-
       var overviewDiv = document.getElementById("overview");
       var scoreTable = document.getElementById("overviewScore");
       var scorePing = document.getElementById("overviewPing");
@@ -199,7 +184,7 @@
       }
 
       window.onload = function() {
-        myID = getCookie(`myDiscordID`);
+        myID = localStorage.userID;
         console.log(myID);
         // if (myID == "" || myID == undefined) {
         //   var input = prompt("It appears you haven't set your ID, if you want us to show your stats on the homepage, please enter it here, if not, type \"no\".");
@@ -275,7 +260,7 @@
 
           myID = `wait`;
         } else if (reauth == false) {
-          document.cookie = `myDiscordID = no`;
+          localStorage.userID = `no`;
           myID = `no`;
           reloadOverview();
 
@@ -287,7 +272,7 @@
         }
 
         if (myID != `wait`)
-          myID = getCookie(`myDiscordID`);
+          myID = localStorage.userID;
 
         if (myID == `no`)
           return;
@@ -311,7 +296,7 @@
 
             reloadOverview();
 
-            document.cookie = `myDiscordID = ${newID}`;
+            localStorage.userID = `${newID}`;
             alert(`You're all set! - New ID: ${newID}`);
 
             signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;

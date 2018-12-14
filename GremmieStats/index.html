@@ -144,7 +144,7 @@
           newID = prompt("What's your new ID?", "Your ID here.");
           bus = `wait`;
         } else {
-          document.cookie = `myDiscordID = no`;
+          localStorage.userID = `no`;
           myID = `no`;
 
           signinDrop.innerHTML = `Not signed in.`;
@@ -159,29 +159,13 @@
               return alert(`Incorrect code! Sign in attempt ignored.`);
             }
 
-            document.cookie = `myDiscordID = ${newID}; path=../`;
+            localStorage.userID = `${newID}`;
             alert(`You're all set! - New ID: ${newID}`);
 
             signinDrop.innerHTML = `Signed in as: ${xhr.responseText}`;
           }
           xhr.send();
         }
-      }
-
-      //Cookie function
-      function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
       }
 
       // Cors function
@@ -204,7 +188,7 @@
       // load navbar data!
       window.onLoad = function() {
         var signinDrop = document.getElementById('signinDrop');
-        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${jquery.cookie("myDiscordID")}`);
+        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID`);
 
         xhr.onLoad() = function() {
           var response = xhr.responseText;
