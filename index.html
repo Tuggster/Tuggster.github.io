@@ -202,12 +202,12 @@
       window.onload = function() {
         myID = getCookie(`myDiscordID`);
         console.log(myID);
-        if (myID == "" || myID == undefined) {
-          var input = prompt("It appears you haven't set your ID, if you want us to show your stats on the homepage, please enter it here, if not, type \"no\".");
-
-          document.cookie = `myDiscordID=${[input]}`;
-          myID = input;
-        }
+        // if (myID == "" || myID == undefined) {
+        //   var input = prompt("It appears you haven't set your ID, if you want us to show your stats on the homepage, please enter it here, if not, type \"no\".");
+        //
+        //   document.cookie = `myDiscordID=${[input]}`;
+        //   myID = input;
+        // }
 
 
         xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+myID.toString());
@@ -263,17 +263,20 @@
 
       function signOut(reauth) {
         var newID;
+        var authCode = Math.floor(Math.random() * 1001);
+
         if (reauth == true) {
           newID = prompt("What's your new ID?");
           newID = parseInt(newID, 10);
 
+
           if (isNaN(newID) || typeof newID == "undefined")
             return alert("Invalid ID! Please try again.");
 
-          document.cookies = `myDiscordID = ${newID}`;
-          alert(`You're all set!`);
+          myID = `wait`;
         } else if (reauth == false && !isNaN(myID) && !typeof myID == "undefined") {
           document.cookie = `myDiscordID = no`;
+          myID = `no`;
 
           return alert(`Successfully signed out!`);
         } else if (reauth == false && isNaN(myID) || typeof myID == "undefined") {
@@ -281,24 +284,35 @@
         }
 
         myID = getCookie(`myDiscordID`);
+
         if (myID == `no`)
           return;
-          
-        xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/data?req=overview&user='+newID.toString());
 
-        xhr.onload = function() {
-          var responseJSON = JSON.parse(xhr.responseText);
+        if (myID == `wait`) {
+          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID.toString()}&code=${}`);
 
-          overviewJSON = responseJSON;
+          if (parseInt(prompt("Please enter your auth code."), 10) != authCode) {
+            return alert(`Incorrect code! Sign in attempt ignored.`);
+          }
 
-          reloadOverview();
 
-          signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;
-          creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools` + `\<br\>> Thanks, ${overviewJSON[`name`]}, I appreciate you checking out my project.`;
-          overviewDiv.style.display = "block";
+          document.cookies = `myDiscordID = ${newID}`;
+          alert(`You're all set!`);
+
+          xhr.onload = function() {
+            var responseJSON = JSON.parse(xhr.responseText);
+
+            overviewJSON = responseJSON;
+
+            reloadOverview();
+
+            signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;
+            creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools` + `\<br\>> Thanks, ${overviewJSON[`name`]}, I appreciate you checking out my project.`;
+            overviewDiv.style.display = "block";
+          }
+
+          xhr.send();
         }
-
-        xhr.send();
       }
 
       var createCORSRequest = function(method, url) {
