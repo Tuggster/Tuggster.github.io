@@ -289,7 +289,6 @@
           return;
 
         if (myID == `wait`) {
-          alert(`testing, 123489`);
           xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID.toString()}&code=${authCode}`);
 
           xhr.onload = function() {
@@ -311,7 +310,7 @@
           }
 
           document.cookies = `myDiscordID = ${newID}`;
-          alert(`You're all set!`);
+          alert(`You're all set! - New ID: ${newID}`);
         }
       }
 
