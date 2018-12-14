@@ -106,7 +106,7 @@
         <button class="dropbtn" style="position: fixed; right: 0; text-align: right" id="signinDrop">Not signed in.
           <i class="fa fa-caret-down"></i>
         </button>
-        <div class="dropdown-content" style="position: fixed; right: 8px; text-align: right; height: 48px;">
+        <div class="dropdown-content" style="position: fixed; right: 8px; text-align: right;">
           <a onclick="signOut(true)">Switch accounts</a>
           <a onclick="signOut(false)">Sign out</a>
         </div>
@@ -178,7 +178,7 @@
           } else {
             localStorage.userID = `no`;
             myID = `no`;
-            signinDrop.style.backgroundColor = "#700c0c"
+            signinDrop.style.color = "#700c0c"
 
             signinDrop.innerHTML = `Not signed in.`;
             return;
@@ -194,7 +194,7 @@
 
               localStorage.userID = `${newID}`;
               alert(`You're all set! - New ID: ${newID}`);
-              signinDrop.style.backgroundColor = ""
+              signinDrop.style.color = ""
 
 
               signinDrop.innerHTML = `Signed in as: ${xhrSignIn.responseText}`;
