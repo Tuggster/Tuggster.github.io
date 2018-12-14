@@ -34,7 +34,18 @@
   </style>
 </head>
   <body>
-    <h1>GremmieSealBot GremmieSeal page!</h1>
+
+    <!--Navigation bar-->
+    <div id="nav-placeholder"></div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+      $(function(){
+        $("#nav-placeholder").load("../nav.html");
+      });
+    </script>
+    <!--end of Navigation bar-->
+
     <h2>See our fancy GremmieSeals!</h2>
     <br>
     <h2>This feature only works if you give us your discord user ID.</h2>
