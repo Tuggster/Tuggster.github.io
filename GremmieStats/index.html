@@ -155,7 +155,7 @@
 
       // load navbar data!
       function load() {
-        var signinDrop = document.getElementById('nav-placeholder').getElementById('signinDrop');
+        var signinDrop = $("#nav-placeholder>#signinDrop");
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
         xhrSync.onload = function() {
