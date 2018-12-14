@@ -169,7 +169,7 @@
 
       // load navbar data!
       function load() {
-        signinDrop = document.getElementById('nav-placeholder').document.getElementById("signinDrop").children[0];
+        signinDrop = document.getElementById('nav-placeholder').getElementById("signinDrop").children[0];
         alert(signinDrop);
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
