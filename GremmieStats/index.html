@@ -135,7 +135,7 @@
       $(function(){
         $("#nav-placeholder").load("../nav.html");
         document.addEventListener('DOMContentLoaded', function() {
-          setTimeout(load(), 2000);
+          setTimeout(prepMenuBar(), 2000);
         }, false);
 
 
@@ -172,7 +172,7 @@
 
 
       // load navbar data!
-      function load() {
+      function prepMenuBar() {
         console.log(document.getElementById('nav-placeholder').lastElementChild);
         signinDrop = document.getElementById('nav-placeholder').children[3].children[4].firstElementChild;
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
