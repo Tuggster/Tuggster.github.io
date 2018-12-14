@@ -155,7 +155,7 @@
             var response = xhrSync.responseText;
 
             if (response != "Couldn't get username.") {
-              signinDrop.style.backgroundColor = ""
+              signinDrop.style.backgroundColor = "";
               signinDrop.innerHTML = `Signed in as: ${response}`;
             } else {
               signinDrop.style.backgroundColor = "#700c0c"
@@ -178,6 +178,7 @@
           } else {
             localStorage.userID = `no`;
             myID = `no`;
+            signinDrop.style.backgroundColor = "#700c0c"
 
             signinDrop.innerHTML = `Not signed in.`;
             return;
@@ -193,6 +194,8 @@
 
               localStorage.userID = `${newID}`;
               alert(`You're all set! - New ID: ${newID}`);
+              signinDrop.style.backgroundColor = ""
+
 
               signinDrop.innerHTML = `Signed in as: ${xhrSignIn.responseText}`;
             }
