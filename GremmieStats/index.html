@@ -133,7 +133,11 @@
       var signinDrop;
 
       $(function(){
-        signinDrop = $("#nav-placeholder").load("../nav.html");
+        var bar = $("#nav-placeholder").load("../nav.html",function(data){
+          if (data.id == "signinDrop")
+            signinDrop = data;
+        });
+        signinDrop = bar.
         window.addEventListener("load",load(),false);
       });
 
