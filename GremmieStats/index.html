@@ -130,8 +130,10 @@
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script>
+      var signinDrop;
+
       $(function(){
-        $("#nav-placeholder").load("../nav.html");
+        signinDrop = $("#nav-placeholder").load("../nav.html");
         window.addEventListener("load",load(),false);
       });
 
@@ -167,13 +169,13 @@
 
       // load navbar data!
       function load() {
-        var signinDrop = GetElementInsideContainer(`nav-placeholder`,`signinDrop`);
+        //signinDrop = GetElementInsideContainer(`nav-placeholder`,`signinDrop`);
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
         xhrSync.onload = function() {
           var response = xhrSync.responseText;
 
-          if (response == "" || response == undefined) {
+          if (response != "Couldn't get username.") {
             signinDrop.innerHTML = `Signed in: ${response}`;
             alert(`a: ${response}`);
           } else {
