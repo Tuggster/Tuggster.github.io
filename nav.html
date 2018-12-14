@@ -155,8 +155,10 @@
             var response = xhrSync.responseText;
 
             if (response != "Couldn't get username.") {
+              signinDrop.style.backgroundColor = ""
               signinDrop.innerHTML = `Signed in as: ${response}`;
             } else {
+              signinDrop.style.backgroundColor = "#700c0c"
               signinDrop.innerHTML = `Not signed in.`;
             }
           };

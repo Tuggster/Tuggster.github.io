@@ -141,7 +141,7 @@
   </head>
   <body>
 
-    <div class="topnav">
+    <!-- <div class="topnav">
       <a class="active" href="">Home</a>
       <a href="GremmieStats/index.html">Stats</a>
       <a href="GremmieInfo/index.html">Info</a>
@@ -155,7 +155,18 @@
           <a onclick="signOut(false)">Sign out</a>
         </div>
       </div>
-      <!-- <a onclick="signOut" style="position: fixed; right: 0; text-align: right">Signed in as: Tuggi</a> -->
+       <a onclick="signOut" style="position: fixed; right: 0; text-align: right">Signed in as: Tuggi</a>-->
+
+       <!--Navigation bar-->
+       <div id="nav-placeholder"></div>
+
+       <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+       <script>
+         $(function(){
+           $("#nav-placeholder").load("../nav.html");
+         });
+       </script>
+       <!--end of Navigation bar-->
 
 
     </div>    <h2>Welcome to the beta web portal for GremmieSealBot.</h2>
