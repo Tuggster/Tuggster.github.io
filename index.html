@@ -277,6 +277,7 @@
         } else if (reauth == false && !isNaN(myID) && !typeof myID == "undefined") {
           document.cookie = `myDiscordID = no`;
           myID = `no`;
+          return alert(`You've just signed out!`);
 
           return alert(`Successfully signed out!`);
         } else if (reauth == false && isNaN(myID) || typeof myID == "undefined") {
