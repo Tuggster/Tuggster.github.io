@@ -152,7 +152,7 @@
         }
 
         if (bus == "wait") {
-          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID}&code=${authCode}`);
+          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${newID}&code=${authCode}`);
 
           xhr.onload = function() {
             try {
