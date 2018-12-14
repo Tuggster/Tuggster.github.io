@@ -134,6 +134,45 @@
         $("#nav-placeholder").load("../nav.html");
       });
 
+      function signOut(reauth) {
+        var newID;
+        var bus;
+        var authCode = Math.floor(Math.random() * 1001);
+
+
+        if (reauth == true) {
+          newID = prompt("What's your new ID?", "Your ID here.");
+          bus = `wait`;
+        } else {
+          document.cookie = `myDiscordID = no`;
+          myID = `no`;
+
+          signinDrop.innerHTML = `Not signed in.`;
+          return;
+        }
+
+        if (bus == "wait") {
+          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID}&code=${authCode}`);
+
+          xhr.onload = function() {
+            try {
+              var responseJSON = JSON.parse(xhr.responseText);
+            } catch (error) {
+              if (responseJSON == undefined)
+                return alert(xhr.responseText);
+            }
+
+            if (parseInt(prompt("Please enter your auth code.", "It should be in your Discord direct messages."), 10) != authCode) {
+              return alert(`Incorrect code! Sign in attempt ignored.`);
+            }
+
+            document.cookie = `myDiscordID = ${newID}`;
+            alert(`You're all set! - New ID: ${newID}`);
+
+            signinDrop.innerHTML = `Signed in as: ${responseJSON[`name`]}`;
+        }
+      }
+
       //Cookie function
       function getCookie(cname) {
         var name = cname + "=";
