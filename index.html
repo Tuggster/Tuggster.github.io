@@ -266,8 +266,10 @@
         var authCode = Math.floor(Math.random() * 1001);
 
         if (reauth == true) {
-          newID = prompt("What's your new ID?");
-          newID = parseInt(newID, 10);
+          newID = prompt("What's your new ID?", "Your ID here.");
+          // console.log("Prompt value: " + newID);
+          // newID = parseInt(newID, 10);
+          // console.log("Parsed value: " + newID);
 
           if (isNaN(newID) || typeof newID == "undefined")
             return alert("Invalid ID! Please try again.");
@@ -289,14 +291,14 @@
           return;
 
         if (myID == `wait`) {
-          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID.toString()}&code=${authCode}`);
+          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID}&code=${authCode}`);
 
           xhr.onload = function() {
             var responseJSON = JSON.parse(xhr.responseText);
 
             overviewJSON = responseJSON;
 
-            if (parseInt(prompt("Please enter your auth code."), 10) != authCode) {
+            if (parseInt(prompt("Please enter your auth code.", "It should be in your Discord direct messages."), 10) != authCode) {
               return alert(`Incorrect code! Sign in attempt ignored.`);
             }
 
