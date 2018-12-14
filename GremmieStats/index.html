@@ -135,8 +135,11 @@
       $(function(){
         $("#nav-placeholder").load("../nav.html");
         document.addEventListener('DOMContentLoaded', function() {
-           load();
         }, false);
+
+        $('#nav-placeholder').load(function() {
+          load();
+        });
       });
 
       function GetElementInsideContainer(containerID, childID) {
