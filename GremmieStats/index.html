@@ -194,9 +194,9 @@
           var response = xhr.responseText;
 
           if (response == "" || response == "undefined") {
-            signinDrop.innerHTML = `Signed in: ${response}`;
-          } else {
             signinDrop.innerHTML = `Not signed in.`;
+          } else {
+            signinDrop.innerHTML = `Signed in: ${response}`;
           }
         }
         xhr.send();
