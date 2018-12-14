@@ -280,6 +280,8 @@
 
           return alert(`Successfully signed out!`);
         } else if (reauth == false && isNaN(myID) || typeof myID == "undefined") {
+          document.cookie = `myDiscordID = no`;
+          myID = `no`;
           return alert(`Looks like you weren't signed in to begin with.`);
         }
 
