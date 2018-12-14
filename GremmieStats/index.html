@@ -160,9 +160,8 @@
 
         xhrSync.onload = function() {
           var response = xhrSync.responseText;
-          alert(response);
 
-          if (response == "" || response == "undefined") {
+          if (response == "" || response == undefined) {
             signinDrop.innerHTML = `Not signed in.`;
           } else {
             signinDrop.innerHTML = `Signed in: ${response}`;
