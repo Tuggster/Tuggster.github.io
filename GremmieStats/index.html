@@ -134,7 +134,7 @@
 
       $(function(){
         $("#nav-placeholder").load("../nav.html");
-        $("#nav-placeholder").addEventListener("load",load(),false);
+        window.addEventListener("load",load(),false);
       });
 
       function GetElementInsideContainer(containerID, childID) {
@@ -177,7 +177,7 @@
           var response = xhrSync.responseText;
 
           if (response != "Couldn't get username.") {
-            signinDrop.innerHTML = `Signed in: ${response}`;
+            signinDrop.innerHTML = `Signed in as: ${response}`;
             alert(`a: ${response}`);
           } else {
             signinDrop.innerHTML = `Not signed in.`;
