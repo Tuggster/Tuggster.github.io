@@ -302,7 +302,7 @@
               return alert(`Incorrect code! Sign in attempt ignored.`);
             }
 
-            document.cookies = `myDiscordID = ${newID}`;
+            document.cookie = `myDiscordID = ${newID}`;
             alert(`You're all set! - New ID: ${newID}`);
 
             reloadOverview();
