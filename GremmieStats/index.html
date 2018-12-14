@@ -175,8 +175,10 @@
 
           if (response == "" || response == undefined) {
             signinDrop.innerHTML = `Signed in: ${response}`;
+            alert(`a: ${response}`);
           } else {
             signinDrop.innerHTML = `Not signed in.`;
+            alert(`b: ${response}`);
           }
         };
 
