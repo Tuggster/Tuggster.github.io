@@ -137,9 +137,8 @@
         document.addEventListener('DOMContentLoaded', function() {
         }, false);
 
-        $(window).load(function () {
-          load();
-        });
+       setTimeout(load(), 100);
+
       });
 
       function GetElementInsideContainer(containerID, childID) {
