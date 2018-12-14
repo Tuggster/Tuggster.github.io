@@ -133,10 +133,7 @@
       var signinDrop;
 
       $(function(){
-        var bar = $("#nav-placeholder").load("../nav.html",function(data){
-          if (data.id == "signinDrop")
-            signinDrop = data;
-        });
+        var bar = $("#nav-placeholder").load("../nav.html");
         window.addEventListener("load",load(),false);
       });
 
@@ -172,7 +169,8 @@
 
       // load navbar data!
       function load() {
-        //signinDrop = GetElementInsideContainer(`nav-placeholder`,`signinDrop`);
+        signinDrop = GetElementInsideContainer(`nav-placeholder`,`signinDrop`);
+        alert(signinDrop);
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
         xhrSync.onload = function() {
