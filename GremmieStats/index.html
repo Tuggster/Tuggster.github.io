@@ -130,9 +130,58 @@
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script>
-    $(function(){
-      $("#nav-placeholder").load("../nav.html");
-    });
+      $(function(){
+        $("#nav-placeholder").load("../nav.html");
+      });
+
+      //Cookie function
+      function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      // Cors function
+      var createCORSRequest = function(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Most browsers.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      // load navbar data!
+      window.onLoad = function() {
+        var signinDrop = document.getElementById('signinDrop');
+        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${getCookie("myDiscordID")}`);
+
+        xhr.onLoad() = function() {
+          var response = xhr.responseText;
+
+          if (response == "" || response == "undefined") {
+            signinDrop.innerHTML = `Signed in: ${response}`;
+          } else {
+            signinDrop.innerHTML = `Not signed in.`;
+          }
+        }
+      }
     </script>
     <!--end of Navigation bar-->
 
