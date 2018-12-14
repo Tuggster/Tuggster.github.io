@@ -134,10 +134,28 @@
         $("#nav-placeholder").load("../nav.html");
       });
 
+      // Cors function
+      var createCORSRequest = function(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Most browsers.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
       // load navbar data!
       window.onload = function() {
         var signinDrop = document.getElementById('signinDrop');
         var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
+
 
         xhr.onload() = function() {
           var response = xhr.responseText;
@@ -188,22 +206,7 @@
         }
       }
 
-      // Cors function
-      var createCORSRequest = function(method, url) {
-        var xhr = new XMLHttpRequest();
-        if ("withCredentials" in xhr) {
-          // Most browsers.
-          xhr.open(method, url, true);
-        } else if (typeof XDomainRequest != "undefined") {
-          // IE8 & IE9
-          xhr = new XDomainRequest();
-          xhr.open(method, url);
-        } else {
-          // CORS not supported.
-          xhr = null;
-        }
-        return xhr;
-      };
+
     </script>
     <!--end of Navigation bar-->
 
