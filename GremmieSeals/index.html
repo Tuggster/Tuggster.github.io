@@ -40,17 +40,15 @@
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script>
-    
       $(function(){
         $("#nav-placeholder").load("../nav.html");
       });
     </script>
     <!--end of Navigation bar-->
 
-    <h2>See our fancy GremmieSeals!</h2>
-    <br>
-    <h2>This feature only works if you give us your discord user ID.</h2>
-    <h3>If you've previously denied us access to your ID, please clear cookies for this site and try again!</h3>
+    <h2 style="margin: 0;">See our fancy GremmieSeals!</h2>
+    <h2 style="margin: 0;">This feature only works if you give us your discord user ID.</h2>
+    <h3 style="margin: 0;">If you've aren't signed in, please do so now</h3>
 
     <table id="sealTable">
       <tr>
@@ -65,22 +63,7 @@
 
     <script type="text/javascript">
 
-      function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
-      }
-
-      myID = getCookie(`myDiscordID`);
+      myID = localStorage.userID;
 
 
       window.onload = function() {
