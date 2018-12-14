@@ -156,12 +156,10 @@
       // load navbar data!
       function load() {
         var signinDrop = document.getElementById('signinDrop');
-        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
+        var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
-        alert(`onload ran`);
-
-        xhr.onload() = function() {
-          var response = xhr.responseText;
+        xhrSync.onload() = function() {
+          var response = xhrSync.responseText;
           alert(response);
 
           if (response == "" || response == "undefined") {
@@ -172,7 +170,7 @@
             alert("Good.");
           }
         }
-        xhr.send();
+        xhrSync.send();
       }
 
       function signOut(reauth) {
