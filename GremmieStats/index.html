@@ -163,11 +163,9 @@
           alert(response);
 
           if (response == "" || response == "undefined") {
-            alert("Bad.");
             signinDrop.innerHTML = `Not signed in.`;
           } else {
             signinDrop.innerHTML = `Signed in: ${response}`;
-            alert("Good.");
           }
         }
         xhrSync.send();
