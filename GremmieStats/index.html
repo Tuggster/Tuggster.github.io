@@ -135,7 +135,7 @@
       $(function(){
         $("#nav-placeholder").load("../nav.html");
         document.addEventListener('DOMContentLoaded', function() {
-          setTimeout(prepMenuBar(), 2000);
+          setTimeout(prepMenuBar(), 30);
         }, false);
 
 
@@ -173,7 +173,6 @@
 
       // load navbar data!
       function prepMenuBar() {
-        console.log(document.getElementById('nav-placeholder').lastElementChild);
         signinDrop = document.getElementById('nav-placeholder').children[3].children[4].firstElementChild;
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
@@ -182,10 +181,8 @@
 
           if (response != "Couldn't get username.") {
             signinDrop.innerHTML = `Signed in as: ${response}`;
-            alert(`a: ${response}`);
           } else {
             signinDrop.innerHTML = `Not signed in.`;
-            alert(`b: ${response}`);
           }
         };
 
