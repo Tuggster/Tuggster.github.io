@@ -269,7 +269,6 @@
           newID = prompt("What's your new ID?");
           newID = parseInt(newID, 10);
 
-
           if (isNaN(newID) || typeof newID == "undefined")
             return alert("Invalid ID! Please try again.");
 
@@ -283,7 +282,8 @@
           return alert(`Looks like you weren't signed in to begin with.`);
         }
 
-        myID = getCookie(`myDiscordID`);
+        if (myID != `wait`)
+          myID = getCookie(`myDiscordID`);
 
         if (myID == `no`)
           return;
