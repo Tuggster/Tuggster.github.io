@@ -159,7 +159,7 @@
               return alert(`Incorrect code! Sign in attempt ignored.`);
             }
 
-            document.cookie = `myDiscordID = ${newID}`;
+            document.cookie = `myDiscordID = ${newID}; path=..`;
             alert(`You're all set! - New ID: ${newID}`);
 
             signinDrop.innerHTML = `Signed in as: ${xhr.responseText}`;
