@@ -132,6 +132,7 @@
     <script>
       $(function(){
         $("#nav-placeholder").load("../nav.html");
+        window.addEventListener("load",load(),false);
       });
 
       function GetElementInsideContainer(containerID, childID) {
@@ -162,7 +163,6 @@
         }
         return xhr;
       };
-      window.addEventListener("load",load(),false);
 
 
       // load navbar data!
@@ -174,9 +174,9 @@
           var response = xhrSync.responseText;
 
           if (response == "" || response == undefined) {
-            signinDrop.innerHTML = `Signed in: ${response}`;
-          } else {
             signinDrop.innerHTML = `Not signed in.`;
+          } else {
+            signinDrop.innerHTML = `Signed in: ${response}`;
           }
         };
 
