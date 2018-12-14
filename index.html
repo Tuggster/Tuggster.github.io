@@ -289,7 +289,7 @@
           return;
 
         if (myID == `wait`) {
-          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID.toString()}&code=${}`);
+          xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID.toString()}&code=${authCode}`);
 
           if (parseInt(prompt("Please enter your auth code."), 10) != authCode) {
             return alert(`Incorrect code! Sign in attempt ignored.`);
