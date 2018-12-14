@@ -274,14 +274,16 @@
             return alert("Invalid ID! Please try again.");
 
           myID = `wait`;
-        } else if (reauth == false && !isNaN(myID) && typeof myID != "undefined") {
+        } else if (reauth == false) {
           document.cookie = `myDiscordID = no`;
           myID = `no`;
-          return alert(`You've just signed out!`);
-        } else if (reauth == false && isNaN(myID) || typeof myID == "undefined") {
-          document.cookie = `myDiscordID = no`;
-          myID = `no`;
-          return alert(`Looks like you weren't signed in to begin with.`);
+          reloadOverview();
+
+          signinDrop.innerHTML = `Not signed in.`;
+          creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools`;
+          overviewDiv.style.display = "none";
+
+          return alert(`Signed out.`);
         }
 
         if (myID != `wait`)
@@ -294,7 +296,12 @@
           xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=overview&user=${newID}&code=${authCode}`);
 
           xhr.onload = function() {
-            var responseJSON = JSON.parse(xhr.responseText);
+            try {
+              var responseJSON = JSON.parse(xhr.responseText);
+            } catch (error) {
+              if (responseJSON == undefined)
+                return alert(xhr.responseText);
+            }
 
             overviewJSON = responseJSON;
 
@@ -302,10 +309,10 @@
               return alert(`Incorrect code! Sign in attempt ignored.`);
             }
 
+            reloadOverview();
+
             document.cookie = `myDiscordID = ${newID}`;
             alert(`You're all set! - New ID: ${newID}`);
-
-            reloadOverview();
 
             signinDrop.innerHTML = `Signed in as: ${overviewJSON[`name`]}`;
             creditsText.innerHTML = `> Designed and programmed by Paxton<br>> Testing and moral support by Tate<br>> Some ideas by Ethan<br>> I got this excellent navigation bar from W3schools` + `\<br\>> Thanks, ${overviewJSON[`name`]}, I appreciate you checking out my project.`;
