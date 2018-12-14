@@ -155,13 +155,6 @@
           xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${newID}&code=${authCode}`);
 
           xhr.onload = function() {
-            try {
-              var responseJSON = JSON.parse(xhr.responseText);
-            } catch (error) {
-              if (responseJSON == undefined)
-                return alert(xhr.responseText);
-            }
-
             if (parseInt(prompt("Please enter your auth code.", "It should be in your Discord direct messages."), 10) != authCode) {
               return alert(`Incorrect code! Sign in attempt ignored.`);
             }
@@ -169,7 +162,7 @@
             document.cookie = `myDiscordID = ${newID}`;
             alert(`You're all set! - New ID: ${newID}`);
 
-            signinDrop.innerHTML = `Signed in as: ${responseJSON[`name`]}`;
+            signinDrop.innerHTML = `Signed in as: ${xhr.responseText}`;
           }
           xhr.send();
         }
