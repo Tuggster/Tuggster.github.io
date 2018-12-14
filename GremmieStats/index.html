@@ -134,6 +134,23 @@
         $("#nav-placeholder").load("../nav.html");
       });
 
+      // load navbar data!
+      window.onLoad = function() {
+        var signinDrop = document.getElementById('signinDrop');
+        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
+
+        xhr.onLoad() = function() {
+          var response = xhr.responseText;
+
+          if (response == "" || response == "undefined") {
+            signinDrop.innerHTML = `Not signed in.`;
+          } else {
+            signinDrop.innerHTML = `Signed in: ${response}`;
+          }
+        }
+        xhr.send();
+      }
+
       function signOut(reauth) {
         var newID;
         var bus;
@@ -184,23 +201,6 @@
         }
         return xhr;
       };
-
-      // load navbar data!
-      window.onLoad = function() {
-        var signinDrop = document.getElementById('signinDrop');
-        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
-
-        xhr.onLoad() = function() {
-          var response = xhr.responseText;
-
-          if (response == "" || response == "undefined") {
-            signinDrop.innerHTML = `Not signed in.`;
-          } else {
-            signinDrop.innerHTML = `Signed in: ${response}`;
-          }
-        }
-        xhr.send();
-      }
     </script>
     <!--end of Navigation bar-->
 
