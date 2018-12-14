@@ -128,7 +128,7 @@
       <a href="GremmieSeals/index.html">Seals</a>
       <a href="GremmieSeals/index.html">Seals</a>
       <div class="dropdown">
-        <button class="dropbtn" style="position: fixed; right: 0; text-align: right" id="signinDrop">Signed in as: Tuggi
+        <button class="dropbtn" style="position: fixed; right: 0; text-align: right" id="signinDrop">Not signed in.
           <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content" style="position: fixed; right: 0; text-align: right">
@@ -193,15 +193,13 @@
           scoreTable.deleteRow(1);
 
         var newRow = scoreTable.insertRow(1);
-        newRow.insertCell(0).innerHTML = responseJSON[`sent`];
-        newRow.insertCell(1).innerHTML = responseJSON[`received`];
+        newRow.insertCell(0).innerHTML = overviewJSON[`sent`];
+        newRow.insertCell(1).innerHTML = overviewJSON[`received`];
 
-        overviewPing.innerHTML = `Ping: ` + responseJSON[`ping`];
+        overviewPing.innerHTML = `Ping: ` + overviewJSON[`ping`];
       }
 
       window.onload = function() {
-
-
         myID = getCookie(`myDiscordID`);
         console.log(myID);
         if (myID == "" || myID == undefined) {
