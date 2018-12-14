@@ -155,10 +155,8 @@
             var response = xhrSync.responseText;
 
             if (response != "Couldn't get username.") {
-              signinDrop.style.color = "";
               signinDrop.innerHTML = `Signed in as: ${response}`;
             } else {
-              signinDrop.style.color = "#700c0c"
               signinDrop.innerHTML = `Not signed in.`;
             }
           };
@@ -178,8 +176,6 @@
           } else {
             localStorage.userID = `no`;
             myID = `no`;
-            signinDrop.style.color = "#700c0c"
-
             signinDrop.innerHTML = `Not signed in.`;
             return;
           }
@@ -194,9 +190,6 @@
 
               localStorage.userID = `${newID}`;
               alert(`You're all set! - New ID: ${newID}`);
-              signinDrop.style.color = ""
-
-
               signinDrop.innerHTML = `Signed in as: ${xhrSignIn.responseText}`;
             }
             xhrSignIn.send();
