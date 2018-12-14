@@ -134,6 +134,18 @@
         $("#nav-placeholder").load("../nav.html");
       });
 
+      function GetElementInsideContainer(containerID, childID) {
+          var elm = {};
+          var elms = document.getElementById(containerID).getElementsByTagName("*");
+          for (var i = 0; i < elms.length; i++) {
+              if (elms[i].id === childID) {
+                  elm = elms[i];
+                  break;
+              }
+          }
+          return elm;
+      }
+
       // Cors function
       var createCORSRequest = function(method, url) {
         var xhr = new XMLHttpRequest();
@@ -155,14 +167,14 @@
 
       // load navbar data!
       function load() {
-        var signinDrop = $("#nav-placeholder>#signinDrop");
+        var signinDrop = GetElementInsideContainer(`nav-placeholder`,`signinDrop`);
         var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
         xhrSync.onload = function() {
           var response = xhrSync.responseText;
 
           if (response == "" || response == undefined) {
-            signinDrop.innerHTML = `Not signed in.!!!!`;
+            signinDrop.innerHTML = `Not signed in.`;
           } else {
             signinDrop.innerHTML = `Signed in: ${response}`;
           }
