@@ -175,7 +175,7 @@
 
         // load user data!
         function loadData() {
-          signinDrop = document.getElementById('nav-placeholder').children[3].children[4].firstElementChild;
+          signinDrop = document.getElementById('nav-placeholder').children[3].children[2].firstElementChild.firstElementChild;
           var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
           xhrSync.onload = function() {
