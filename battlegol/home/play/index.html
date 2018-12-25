@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <style media="screen">
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    </style>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script> -->
+    <script src="sketch.js"></script>
+
+    <title>Play BattleGOL!</title>
+  </head>
+  <body>
+    <h1>BattleGOL</h1>
+
+    <div class="create" id="createGame" style="display: none">
+      <textarea name="name" rows="1" cols="60" placeholder="Lobby name" id="name"></textarea> <br>
+      <textarea name="pass" rows="1" cols="60" placeholder="Password (Optional)" id="password"></textarea> <br>
+      <input type="checkbox" name="" value="false" id="protected"> Password Protected <br>
+      <button type="button" onclick="createLobby()" style="">create lobby</button>
+    </div>
+
+    <div class="join" id="joinGame" style="display: none">
+      <table id="gamesTable">
+        <tr>
+          <th>Lobby Name</th>
+          <th>Password Protected</th>
+          <th>Player Count</th>
+          <th>Join</th>
+        </tr>
+      </table>
+      <button type="button" name="reload" onclick="getLobbies()">load lobbies</button>
+    </div>
+
+    <button type="button" onclick="switchMode()">create/join</button>
+
+    <script type="text/javascript">
+      var browserMode = true;
+      var createCORSRequest = function(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Most browsers.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      var switchMode = function() {
+        browserMode = !browserMode;
+
+        let createGame = document.getElementById("createGame");
+        let joinGame = document.getElementById("joinGame");
+
+        createGame.style.display = browserMode ? "none" : "block";
+        joinGame.style.display = browserMode ? "block" : "none";
+      }
+
+      var createLobby = function() {
+
+        let name = document.getElementById("name");
+        let pass = document.getElementById("password");
+        let prot = document.getElementById("protected");
+
+        var xhr = createCORSRequest('POST', `http://18.220.203.155:3000/lobby?req=create&name=${name.value}&lock=${prot.checked}&pass=${pass.value}&players=1&id=${Math.floor(Math.random() * 10001)}`);
+        if (!xhr) {
+          throw new Error('CORS not supported');
+        }
+
+        xhr.onload = function() {
+         var responseText = xhr.responseText;
+
+         var data;
+
+         try {
+           var responseJSON = JSON.parse(responseText);
+           data  = `Sent: ${responseJSON[`sent`]}. Received: ${responseJSON[`received`]}`;
+         } catch (e) {
+           data = "Error: " + responseText;
+         }
+
+         console.log(responseText);
+
+        };
+
+        xhr.send();
+      }
+
+      var getLobbies = function () {
+        var table = document.getElementById("gamesTable");
+
+        var xhr = createCORSRequest('GET', `http://18.220.203.155:3000/lobby`);
+        if (!xhr) {
+          throw new Error('CORS not supported');
+        }
+
+        xhr.onload = function () {
+          var responseText = xhr.responseText;
+          var responseJSON = JSON.parse(responseText);
+
+          if (table.rows.length > 1) {
+            for (var i = 1; i < table.rows.length; i++) {
+              table.deleteRow(1);
+            }
+          }
+
+          for (var i = 0; i < responseJSON.length; i++) {
+            console.log(table);
+            let row = table.insertRow(1);
+            row.insertCell().innerHTML = responseJSON[i][`name`];
+            row.insertCell().innerHTML = responseJSON[i][`locked`];
+            row.insertCell().innerHTML = responseJSON[i][`playerCount`];
+            row.insertCell().innerHTML = `\<a href="join.html?id=${responseJSON[i][`id`]}"\>join\</a\>`;
+          }
+
+
+        }
+
+        xhr.send();
+
+      }
+
+
+
+
+    </script>
+  </body>
+</html>

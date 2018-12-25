@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+    <title>Join game</title>
+  </head>
+  <body>
+      <div class="loading" id="wait">
+        <h1>Loading!</h1>
+        <b><p>Hold your horses!</p></b>
+      </div>
+      <div class="game" id="game" style="display: none;">
+        <script src="sketch.js" charset="utf-8"></script>
+      </div>
+
+      <script type="text/javascript">
+
+        function getQueryStringValue (key) {
+          return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        }
+
+        let gameID = getQueryStringValue(`id`);
+        let loadingDiv = document.getElementById(`wait`);
+        let gameDiv = document.getElementById(`game`);
+        let syncDepth = 0;
+
+        var lastBoard;
+        var sendQueue = [];
+
+        var myID;
+
+        var diff = {
+          x: 0,
+          y: 0,
+          state: 0
+        }
+
+        var createCORSRequest = function(method, url) {
+          var xhr = new XMLHttpRequest();
+          if ("withCredentials" in xhr) {
+            // Most browsers.
+            xhr.open(method, url, true);
+          } else if (typeof XDomainRequest != "undefined") {
+            // IE8 & IE9
+            xhr = new XDomainRequest();
+            xhr.open(method, url);
+          } else {
+            // CORS not supported.
+            xhr = null;
+          }
+          return xhr;
+        };
+
+        window.onload = function() {
+          loadGame();
+        }
+
+        var loadGame = function() {
+
+          let xhr = createCORSRequest(`GET`, `http://18.220.203.155:3000/game?req=join&id=${gameID}`);
+          if (!xhr) {
+            throw new Error('CORS not supported');
+          }
+
+          xhr.onload = function () {
+            loadingDiv.style.display = `none`;
+            gameDiv.style.display = `block`;
+
+
+            myID = parseInt(xhr.responseText, 10);
+            init();
+            //startGame();
+
+          }
+
+          xhr.send();
+        }
+
+        sendBoard = function() {
+          sendQueue = [];
+          for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+              if (board[i][j] != lastBoard[i][j]) {
+                let d = diff;
+                d.x = i;
+                d.y = j;
+                d.state = board[i][j];
+
+                sendQueue.push(d);
+              }
+            }
+          }
+
+          let xhr = createCORSRequest(`POST`, `http://18.220.203.155:3000/game?req=send&id=${gameID}`);
+          if (!xhr) {
+            throw new Error('CORS not supported');
+          }
+
+          xhr.setRequestHeader(`content-type`, `application/json`);
+          //console.log(sendQueue);
+          xhr.send(JSON.stringify(sendQueue));
+        }
+
+        setBoard = function(text) {
+          console.log(text);
+          let json = JSON.parse(text);
+          console.log(json);
+          for (let i = syncDepth; i < json.data.length; i++) {
+            let data = json[`data`][i];
+            syncDepth++;
+            if (!data.init) {
+              board[data.x][data.y] = data.state;
+            } else {
+              for (let x = 0; x < board.length; x++) {
+                for (let y = 0; y < board[x].length; y++) {
+                  board[x][y] = data.state;
+                }
+              }
+            }
+          }
+
+          lastBoard = copy2D(board);
+        }
+
+        copy2D = function(currentArray) {
+          var newArray = [];
+
+          for (var i = 0; i < currentArray.length; i++)
+              newArray[i] = currentArray[i].slice();
+
+          return newArray;
+        }
+      </script>
+
+
+  </body>
+</html>
