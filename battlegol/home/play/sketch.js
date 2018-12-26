@@ -23,9 +23,10 @@ function getCellLivingNeighbors(x, y, array) {
 let board;
 let tileSize = 20;
 let playing = false;
+let roundLength = 100;
 
 function init() {
-  createCanvas(1400, 600);
+  createCanvas(1400, 12000);
   background(51);
 
   board = create2DArray(height/tileSize, width/tileSize);
@@ -52,6 +53,14 @@ function draw() {
 
   show();
 
+  if (itt >= roundLength) {
+    playing = false;
+    itt = 0;
+    return;
+    ready = false;
+    sendBoard();
+  }
+
   for (let x = 0; x < newBoard.length; x++) {
     for (let y = 0; y < newBoard[x].length; y++) {
       let neighbors = getCellLivingNeighbors(x, y, board);
@@ -68,6 +77,7 @@ function draw() {
     }
   }
 
+  itt++;
   board = newBoard;
 }
 
@@ -75,23 +85,16 @@ function mousePressed() {
   let x = floor(mouseX / tileSize);
   let y = floor(mouseY / tileSize);
 
-  console.log(`Pressed! x: ${x} - y: ${y}`);
 
-  board[x][y] = 1;
-  sendBoard();
+  if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+    console.log(`Pressed! x: ${x} - y: ${y}`);
 
-  let xhr = createCORSRequest(`GET`, `http://18.220.203.155:3000/game?req=sync&id=${gameID}`);
-  if (!xhr) {
-    throw new Error('CORS not supported');
+    board[x][y] = 1;
+    sendBoard();
+    getBoard();
+
+    show();
   }
-
-  xhr.onload = function () {
-    setBoard(xhr.responseText);
-  }
-
-  xhr.send();
-
-  show();
 }
 
 function show() {

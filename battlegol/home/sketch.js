@@ -24,7 +24,7 @@ let board;
 let tileSize = 20;
 
 function setup() {
-  createCanvas(800, 200);
+  createCanvas(800, 800);
   background(51);
 
   board = create2DArray(height/tileSize, width/tileSize);

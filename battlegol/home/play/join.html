@@ -12,6 +12,8 @@
       </div>
       <div class="game" id="game" style="display: none;">
         <script src="sketch.js" charset="utf-8"></script>
+        <button type="button" name="button" style="display: block;" onclick="amReady()">I'm ready!</button>
+
       </div>
 
       <script type="text/javascript">
@@ -28,7 +30,12 @@
         var lastBoard;
         var sendQueue = [];
 
+        var itt = 0;
+
         var myID;
+        var isReady = false;
+        var t=setInterval(checkReady,5000);
+
 
         var diff = {
           x: 0,
@@ -103,9 +110,7 @@
         }
 
         setBoard = function(text) {
-          console.log(text);
           let json = JSON.parse(text);
-          console.log(json);
           for (let i = syncDepth; i < json.data.length; i++) {
             let data = json[`data`][i];
             syncDepth++;
@@ -123,6 +128,43 @@
           lastBoard = copy2D(board);
         }
 
+        function getBoard() {
+          let xhr = createCORSRequest(`GET`, `http://18.220.203.155:3000/game?req=sync&id=${gameID}`);
+          if (!xhr) {
+            throw new Error('CORS not supported');
+          }
+
+          xhr.onload = function () {
+            setBoard(xhr.responseText);
+          }
+
+          xhr.send();
+        }
+
+        let amReady = function() {
+
+          let xhr = createCORSRequest(`GET`, `http://18.220.203.155:3000/game?req=ready&id=${gameID}`);
+          if (!xhr) {
+            throw new Error('CORS not supported');
+          }
+
+          xhr.onload = function () {
+            if (parseInt(xhr.responseText, 10) >= 2) {
+              done();
+            } else {
+              checkReady();
+              t=setInterval(checkReady, 1000);
+            }
+          }
+
+          xhr.send();
+
+          ready = true;
+
+
+
+        }
+
         copy2D = function(currentArray) {
           var newArray = [];
 
@@ -130,6 +172,55 @@
               newArray[i] = currentArray[i].slice();
 
           return newArray;
+        }
+
+        var checkReady = function () {
+          let xhr = createCORSRequest(`GET`, `http://18.220.203.155:3000/game?req=isready&id=${gameID}`);
+          if (!xhr) {
+            throw new Error('CORS not supported');
+          }
+
+          if (!ready)
+            amReady();
+
+          xhr.onload = function () {
+            let data = JSON.parse(xhr.responseText);
+            console.log(data, data.playersReady);
+
+            if (parseInt(data.playersReady, 10) >= 2) {
+              ack();
+              ready = true;
+              // setTimeout(done(), 1500);
+            }
+
+            if (parseInt(data.playersReady, 10) == 2 && parseInt(data.ack, 10) - ready ? 1 : 0 >= 1) {
+              setTimeout(done(), 1000);
+            }
+
+            setBoard(xhr.responseText);
+          }
+
+          xhr.send();
+
+
+        }
+
+        function ack() {
+          let xhr = createCORSRequest(`POST`, `http://18.220.203.155:3000/game?req=ack&id=${gameID}`);
+          xhr.send();
+        }
+
+        function done() {
+          clearInterval(t);
+          let xhr = createCORSRequest(`GET`, `http://18.220.203.155:3000/game?req=sync&id=${gameID}&done=true`);
+          ready = false;
+          playing = true;
+
+          xhr.onload = function () {
+            console.log(`done.`);
+          }
+
+          xhr.send();
         }
       </script>
 
