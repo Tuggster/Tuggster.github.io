@@ -60,9 +60,8 @@
       var refP = document.getElementById('refP');
 
       window.onload = function() {
-        if (myID != undefined && myID != "no") {
+        if (myID != undefined && myID != "no" && myCode != undefined) {
           signIn();
-          refP.innerHTML = "Your referral code: " + myCode;
         }
       }
 
@@ -71,6 +70,24 @@
         signuppromptdiv.style.display = "none";
         marketdiv.style.display = "block";
 
+        let xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=userinfo&mode=get&user=${myID}`);
+
+        xhr.onload = function () {
+          var responseText = xhr.responseText;
+
+          try {
+            var responseJSON = JSON.parse(responseText);
+          } catch (e) {
+            return window.alert(`Error: ${responseText}`);
+          }
+          localStorage.setItem('userRefCode', responseJSON.cheehahn_refcode);
+          refP.innerHTML = "Your referral code: " + responseJSON.cheehahn_refcode;
+
+        }
+
+        xhr.send();
+
+        refP.innerHTML = "Your referral code: " + myCode;
       }
 
       let signUp = function() {
