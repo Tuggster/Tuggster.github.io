@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Cheehahn Nation</title>
+
+    <script type="text/javascript"> // XHR request function
+      var createCORSRequest = function(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Most browsers.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+    </script>
+
+  </head>
+  <body>
+    <h1>Cheehahn Nation</h1>
+
+    <div class="signupprompt" id="signup">
+      <h2>We'll securely wire you 10 GremmieSeals per user you recruit!</h2>
+      <h3>(And 5 upon joining, too!)</h3><br><br>
+      <p>Type in your Discord userID to join!</p>
+      <input type="text" id="idbox" placeholder="Enter ID here!"><br>
+      <input type="text" id="refBox" placeholder="Enter referral here! (Optional)"><br>
+      <button type="button" name="button" onclick="signUp()">Click to sign up! (will overwrite old referral code!)</button><br>
+    </div>
+
+    <div class="cheehahnmarket" id="marketdiv" style="display:none;">
+      <h2>Welcome to the Cheehahn market!</h2>
+      <h3>Buy and sell exclusive Cheehahn Inc. products!</h3>
+      <p>No items currently for sale. Please check back for later!</p>
+    </div>
+
+    <p id="refP">Your referral code: </p>
+
+
+    <script type="text/javascript">
+      // COPYRIGHT 2019 CHEEHAHN SYSTEMS INC.
+
+      var myID = localStorage.userID;
+      var myCode = localStorage.userRefCode;
+
+
+      var signuppromptdiv = document.getElementById('signup');
+      var marketdiv = document.getElementById('marketdiv');
+
+      var idBox = document.getElementById('idbox');
+      var refBox = document.getElementById('refBox');
+
+      var refP = document.getElementById('refP');
+
+      window.onload = function() {
+        if (myID != undefined && myID != "no") {
+          signIn();
+          refP.innerHTML = "Your referral code: " + myCode;
+        }
+      }
+
+      let signIn = function() {
+        console.log(`Your Discord ID: ${myID}`);
+        signuppromptdiv.style.display = "none";
+        marketdiv.style.display = "block";
+
+      }
+
+      let signUp = function() {
+        let xhr = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=userinfo&mode=set&user=${idBox.value}&refcode=${refBox.value}`);
+        signuppromptdiv.style.display = "none";
+
+        xhr.onload = function() {
+          var responseText = xhr.responseText;
+
+
+          try {
+            var responseJSON = JSON.parse(responseText);
+          } catch (e) {
+            if (responseText == "Already signed up!") {
+              localStorage.setItem('userRefCode', responseText.slice("Already signed up! ".length));
+              refP.innerHTML = "Your referral code: " + responseText.slice("Already signed up! ".length);
+
+              signuppromptdiv.style.display = "none";
+              marketdiv.style.display = "block";
+            }
+            return window.alert(`Error: ${responseText}`);
+          }
+
+           if (responseJSON.cheehahn_signedup == true) {
+             refP.innerHTML = "Your referral code: " + responseJSON.cheehahn_refcode;
+             window.alert(`Awarded 10 GremmieSeals to: ${responseJSON.cheehahn_refuser}!\nThank you for joining the Cheehahn Nation!`);
+           }
+           localStorage.setItem('myID', idBox.value);
+           localStorage.setItem('userRefCode', refBox.value);
+
+           signuppromptdiv.style.display = "none";
+           marketdiv.style.display = "block";
+        }
+
+        if (!isNaN(idBox.value)) {
+          xhr.send();
+        } else {
+          refBox.innerHTML = `Invalid ID!`;
+        }
+      }
+
+    </script>
+
+  </body>
+</html>
