@@ -125,19 +125,19 @@
           <p class="navLeft">GremmieWeb</p>
         </div>
       </a>
-      <div class="dropdown" class="navLeft" id="drop">
+      <div class="dropdown" class="navLeft">
         <button class="dropbtn">
-          <i class="fa fa-caret-down"></i>
+          <i class="fa fa-caret-down" id="drop"></i>
         </button>
         <div class="dropdown-content" style="text-align: right;">
-          <a onclick="signOut(true)">Switch accounts</a>
-          <a onclick="signOut(false)">Sign out</a>
+          <a onclick="signOut(true)" style="color: black">Switch accounts</a>
+          <a onclick="signOut(false)" style="color: black">Sign out</a>
         </div>
       </div>
 
-        <a href="../GSB/GremmieStats/index.html" class="navItem">Stats</a>
-        <a href="../GSB/GremmieInfo/index.html" class="navItem">Info</a>
-        <a href="../GSB/GremmieSeals/index.html" class="navItem">Seals</a>
+        <a href="../GremmieStats/index.html" class="navItem">Stats</a>
+        <a href="../GremmieInfo/index.html" class="navItem">Info</a>
+        <a href="../GremmieSeals/index.html" class="navItem">Seals</a>
 
       </div>
 
@@ -178,7 +178,7 @@
 
         // load user data!
         function loadData() {
-          signinDrop = document.getElementById('nav-placeholder').children[3].children[2].firstElementChild.firstElementChild;
+           signinDrop = document.getElementById('drop');//.children[3].children[2].firstElementChild.firstElementChild;
           var xhrSync = createCORSRequest('GET', `http://18.220.203.155:3000/data?req=username&user=${localStorage.userID}`);
 
           xhrSync.onload = function() {
@@ -225,6 +225,7 @@
             xhrSignIn.send();
           }
         }
+
       </script>
   </body>
 </html>
