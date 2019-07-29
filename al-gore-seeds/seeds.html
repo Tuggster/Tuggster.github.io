@@ -66,6 +66,49 @@
 
      <div class="content" style="color: white; position: absolute; top: 250px">
        <div class="box-one" style="max-width: 40%">
+
+         <script type="text/javascript">
+
+           window.onload = function() {
+             pullData();
+           };
+
+           var createCORSRequest = function(method, url) {
+             var xhr = new XMLHttpRequest();
+             if ("withCredentials" in xhr) {
+               // Most browsers.
+               xhr.open(method, url, true);
+             } else if (typeof XDomainRequest != "undefined") {
+               // IE8 & IE9
+               xhr = new XDomainRequest();
+               xhr.open(method, url);
+             } else {
+               // CORS not supported.
+               xhr = null;
+             }
+             return xhr;
+           };
+
+           function pullData(){
+             var viewsBox = document.getElementById('views');
+
+
+             var xhr = createCORSRequest('GET', 'http://18.220.203.155:3000/al-gore');
+             if (!xhr) {
+               throw new Error('CORS not supported');
+             }
+
+             xhr.onload = function() {
+              var responseText = xhr.responseText;
+
+              viewsBox.innerHTML = `THIS PAGE HAS BEEN VIEWED ${JSON.parse(responseText).views} TIMES!`;
+
+              }
+              xhr.send();
+           }
+         </script>
+          <h2 id="views">THIS PAGE HAS BEEN VIEWED *** TIMES!</h2>
+
            <h1>What are seeds of love?</h1>
               <p> <p style="display:inline; margin-left: 25px;"></p> Al Gore's Seeds of Love is a promotional charity campaign held by the Al Gore Company. We are selling packs of pumpkin seeds with the
               goal of helping children in under-developed countries get the love and support they need. For each pack of seeds we sell (Priced at <p style="color: #ff2020; display: inline">$11.99 a pack</p>, bulk discounts are available.),
