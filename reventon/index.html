@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Lamborghini Reventon Instrumentation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      let canvas;
+      let speedometer;
+      let tachometer;
+      let needle;
+      let needleTwo;
+
+      let tachWidth = 500;
+      let tachX = -200;
+      let tachY = 0;
+      let rpm = 0;
+      let gear = 0;
+      let redline = 10000;
+      let ratios = [3.091, 2.105, 1.565, 1.241, 1.065, 0.939];
+      let offset = 0;
+
+      let speed = 0;
+      let speedoX = 150;
+      let speedoY = 0;
+      let speedoWidth = tachWidth * 1.5;
+
+      let tempWaterAngle = 45;
+      let tempData;
+      let high, low, now;
+
+      function preload() {
+        speedometer = loadImage('imagery/RDBSpeedo.png');
+        tachometer = loadImage('imagery/RDBTacho.png');
+        needle = loadImage('imagery/RDBTachoNeedle.png');
+        needleTwo = loadImage('imagery/needle2.png');
+      }
+
+      let btc = 0;
+
+      function setup() {
+        angleMode(DEGREES);
+        rectMode(CENTER);
+        textAlign(CENTER, CENTER);
+        ellipseMode(CENTER);
+        imageMode(CENTER);
+
+        canvas = createCanvas(1900, 800);
+
+        var xhr = createCORSRequest('GET', `https://api.coindesk.com/v1/bpi/currentprice.json`);
+
+        xhr.onload = function() {
+          console.log(xhr.responseText);
+          var responseJson = JSON.parse(xhr.responseText);
+          btc = Number(responseJson.bpi.USD.rate.replace(",", ""));
+
+          gear = findOptimalGear();
+          rpm = btc / (gear - 1);
+        };
+        xhr.send();
+
+        var xhrWeather = createCORSRequest('GET', `https://api.weather.gov/gridpoints/SEW/134,80/forecast`);
+
+        xhrWeather.onload = function() {
+          tempData = JSON.parse(xhrWeather.responseText);
+          //console.log(xhr.responseText);
+          now = tempData.properties.periods[0].temperature;
+          speed = now;
+          high = now;
+          low = now;
+          for (let i = 0; i < tempData.properties.periods.length; i++) {
+            high = max(high, tempData.properties.periods[i].temperature);
+            low = min(low, tempData.properties.periods[i].temperature);
+          }
+        };
+        xhrWeather.send();
+      }
+
+      function draw() {
+        background(33);
+        image(tachometer, width * 1/4 + tachX, height/2 + tachY, tachWidth, tachWidth);
+        image(speedometer, width * 3/4 + speedoX, height/2 + speedoY, speedoWidth, speedoWidth);
+        strokeWeight(2);
+        stroke(255, 255, 255);
+        fill(255, 255, 255);
+        textSize(100);
+        text(speed, width * 3/4 + speedoX, height / 2 + speedoY);
+        textSize(25);
+        text("°f", width * 3/4 + speedoX, height / 2 + 50 + speedoY);
+        textSize(15);
+        strokeWeight(0.5);
+        text("$BTC x " + (gear-1) + "000\n +- $50", width * 1/4 + 130 + tachX, height / 2 + tachWidth / 2 + tachY) ;
+
+        let targetRPM = btc / (gear - 1) + offset;
+        let dRPM = targetRPM - rpm;
+        if (rpm < 9500 || btc < 10000) {
+          rpm += dRPM * 0.2;
+        } else {
+          rpm -= dRPM * 0.025;
+        }
+
+        if (abs(dRPM) < 5) {
+          offset = getRandomArbitrary(50, -50);
+        }
+
+        rpm = constrain(rpm, 0, 10500);
+
+
+
+        let centerTachX = width * 1/4;
+        stroke(0, 255, 0);
+        for (let i = -1; i <= 1; i += 2) {
+          let topPoint = createVector(centerTachX + (tachWidth * i) / 2 - (i * 130) + tachX, height / 2 - tachWidth / 2 + 18 + tachY);
+          let bottomPoint = createVector(centerTachX + (tachWidth * i) / 2 + (i * - 45) + tachX, height / 2 + tachWidth / 2 - 20 + tachY);
+          let linePoint = p5.Vector.lerp(bottomPoint, topPoint, map(rpm - 600, 0, redline, 0, 1));
+          strokeWeight(4);
+          line(bottomPoint.x, bottomPoint.y, linePoint.x, linePoint.y);
+
+          drawNeedle(linePoint.x + 20, linePoint.y, i);
+          let gearPoint = createVector(centerTachX + (25 * i) + tachX, height/2 - gear * 63 + (tachWidth / 2) - 24 + tachY);
+          drawNeedle(gearPoint.x + 20, gearPoint.y, -i);
+          line(linePoint.x - i * 33, linePoint.y, gearPoint.x + i * 33, gearPoint.y);
+
+
+        }
+
+        let centerSpeedoX = width * 3/4;
+        for (let i = -1; i <= 1; i += 2) {
+          let topPoint = createVector(centerSpeedoX + (speedoWidth / 2 * i) - (225 * i) + speedoX, height/2 - speedoWidth / 2 + 170 + speedoY);
+          let bottomPoint = createVector(centerSpeedoX + (speedoWidth * i) / 2 + (i * - 80) + speedoX, height / 2 + speedoWidth / 2 - 110 + speedoY);
+          let linePoint = p5.Vector.lerp(bottomPoint, topPoint, map(speed, 0, 225, -0.005, 0.993));
+          strokeWeight(4);
+          line(bottomPoint.x, bottomPoint.y, linePoint.x, linePoint.y);
+
+
+        }
+
+        // fill('rgba(0,0,0, 0.0)');
+        // arc(width/2 - 500, height/2 + 350, 350, 375, -54, 0);
+        // stroke('rgba(100,0,0, 1)');
+        // arc(width/2 - 500, height/2 + 350, 350, 375, -54, -45);
+        // tempWaterAngle = -map(now, low, high, 0, 55, true);
+        // image(needleTwo, width/2 - 500 + cos(tempWaterAngle) * (350 / 2), height/2 + 350 + sin(tempWaterAngle) * (375 / 2), 50, 50);
+      }
+
+      function findOptimalGear() {
+        for (let i = 1; i < ratios.length; i++) {
+          if (btc / i < 9800) {
+            return i + 1;
+          }
+        }
+      }
+
+      function drawNeedle(x, y, i) {
+        push();
+        translate(x, y);
+        if (i == 1) {
+          rotate(180);
+          translate(40, 0);
+        }
+        image(needle, 0, 0, 40, 40);
+        pop();
+      }
+
+      function keyPressed() {
+        if (keyCode === UP_ARROW) {
+          gear++;
+        } else if (keyCode === DOWN_ARROW) {
+          gear--;
+        }
+        gear = constrain(gear, 0, 7);
+        return false; // prevent default
+      }
+
+      function createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+
+          // Check if the XMLHttpRequest object has a "withCredentials" property.
+          // "withCredentials" only exists on XMLHTTPRequest2 objects.
+          xhr.open(method, url, true);
+
+        } else if (typeof XDomainRequest != "undefined") {
+
+          // Otherwise, check if XDomainRequest.
+          // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+
+        } else {
+
+          // Otherwise, CORS is not supported by the browser.
+          xhr = null;
+
+        }
+        return xhr;
+      }
+
+      function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+    </script>
+  </body>
+</html>

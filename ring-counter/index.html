@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js" integrity="sha256-2/3R3NV5zryj0fDjD3cDh+SNiWQ/TJiMVZzAo5FrhiU=" crossorigin="anonymous"></script>
+
+    <title>Tree ring counter!</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      let img;
+      let colorList = [];
+      let colorQuantities;
+      let mostCommonColor;
+      let mccBrightness = 0;
+      let mostCommonColorCount = 0;
+      let readyToProcess = false;
+
+      function setup() {
+        createCanvas(1000, 1000);
+        input = createFileInput(handleFile);
+        input.position(0, 0);
+      }
+
+      function draw() {
+        background(255);
+        if (img) {
+          img.filter(POSTERIZE, 3);
+          image(img, 0, 0, width, height);
+
+          if (readyToProcess && mouseIsPressed && mouseButton === LEFT) {
+            readyToProcess = false;
+
+            alert("Predicted tree age: " + processImage(img, mouseX, mouseY));
+          }
+        }
+      }
+
+      function processImage(target, centerX, centerY) {
+        console.log(centerX, centerY);
+        target.loadPixels();
+        for (let y = 0; y < target.height; y++) {
+          for (let x = 0; x < target.height; x++) {
+            let color = colorFromArray(target.get(x,y));
+            // Find list of all colors.
+            if (!colorList.includes(color) && target.get(x,y)[3] > 255/2) {
+              colorList.push(color);
+              console.log(target.get(x,y));
+            }
+          }
+        }
+
+        colorQuantities = new Array(colorList.length);
+        for (let i = 0; i < colorQuantities.length; i++) {
+          colorQuantities[i] = 0;
+        }
+
+        for (let y = 0; y < target.height; y++) {
+          for (let x = 0; x < target.height; x++) {
+            let color = colorFromArray(target.get(x,y));
+            let index = colorList.indexOf(color);
+            // Tally usage of all colors. I'm so sorry for doing this seperately...
+            if (index > -1) {
+              colorQuantities[index]++;
+            }
+          }
+        }
+
+        for (var i = 0; i < colorQuantities.length; i++) {
+          let col = colorQuantities[i];
+
+          if (col > mostCommonColorCount) {
+            mostCommonColor = i;
+            mostCommonColorCount = col;
+          }
+        }
+        mccBrightness = calculateBrightness(colorList[mostCommonColor]);
+
+        let mcc = colorList[mostCommonColor];
+        let age = 0;
+
+        let runs = 2;
+        for (let i = 0; i < runs; i++) {
+          let currentColorMode = false;
+          let lowStreak = 0;
+          let stripe = new Array(); // to be used later?
+
+          for (let j = 0; j < img.width; j++) {
+            stripe.push(img.get((i == 0 ? j : map(centerX, 0, width, 0, img.width)), (i == 0 ? map(centerY, 0, height, 0, img.height) : j)));
+          }
+
+
+          for (let j = 0; j < img.width; j++) {
+            let y = floor(map(centerY, 0, height, 0, img.height));
+            let pix = stripe[j];
+            let brightness = calculateBrightness(pix);
+            console.log (brightness, mccBrightness);
+
+            if (brightness < mccBrightness && !currentColorMode) {
+              lowStreak = 0;
+              currentColorMode = true;
+              console.log("Found darker color.")
+            } else if (brightness >= mccBrightness && currentColorMode) {
+              if (lowStreak > 2) {
+                console.log("Ended low streak...");
+                currentColorMode = false;
+                lowStreak = 0;
+                age++;
+              } else {
+                console.log("Low color streak about to end!")
+                lowStreak++;
+              }
+            }
+
+            if (brightness < mccBrightness) {
+              if (i == 0) {
+                img.set(j, map(centerY, 0, height, 0, img.height), color(255, 0, 0, 255));
+              } else {
+                img.set(map(centerX, 0, width, 0, img.width), j, color(255, 0, 0, 255));
+              }
+            }
+          }
+        }
+        age /= runs;
+        age /= 2;
+        age = Math.ceil(age);
+        console.log(age);
+        img.updatePixels();
+        return age;
+      }
+
+      function colorFromArray(c) {
+        let rawColor = "";
+
+        for (let i = 0; i < c.length - 1; i++) {
+          let out = "" + c[i];
+
+          if (out.length < 3 && out.split("")[out.length - 1] == '0') {
+            for (var j = 0; j < 3 - out.length + 1; j++) {
+              out += "0";
+            }
+          }
+
+          rawColor += "" + out + (i != c.length - 2 ? "," : "");
+        }
+
+        rawColor = rawColor;
+        return rawColor;
+      }
+
+      function arrayFromColor(c) {
+        return c.split(",");
+      }
+
+      function calculateBrightness(c) {
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        if (Array.isArray(c)) {
+          r = c[0];
+          g = c[1];
+          b = c[2];
+        } else {
+          let colorValues = c.split(",");
+          r = colorValues[0];
+          g = colorValues[1];
+          b = colorValues[2];
+        }
+
+        return (0.2126 * r + 0.7152 * g + 0.0722 * b)
+      }
+
+      function handleFile(file) {
+        print(file);
+        if (file.type === 'image') {
+          img = loadImage(file.data, img => {
+            img.filter(POSTERIZE, 3);
+            readyToProcess = true;
+            //processImage(img);
+          });
+        } else {
+          img = null;
+        }
+      }
+    </script>
+  </body>
+</html>

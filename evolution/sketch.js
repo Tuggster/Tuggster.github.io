@@ -9,17 +9,17 @@ var timer = 0;
 
 var foodSlider;
 
-function clampAndSeed(val) {
+function clampAndSeed(val, min, max, seed) {
   if (val) {
-    return constrain(val, 0, 50);
+    return constrain(val + random(-seed, seed), min, max);
   } else {
-    return random(0, 50)
+    return random(0, 50);
   }
 }
 
 function makeFifty() {
   for (let i = 0; i < types.length; i++) {
-    for (let j = 0; j < 10; j++) {
+    for (let j = 0; j < 50; j++) {
       let ani = types[i].makeAnimal();
       ani.type = i;
       animals.push(ani);
@@ -120,6 +120,9 @@ function drawPopGraph(data, x, y, height, good, bad, label) {
   fill('black');
   text(data[data.length - 1], data.length - 15 + x,min(50, m * 2)+10+y);
   text(m, mi - 15 + x, min(50, m * 2) + 10 + y);
+  fill('orange');
+  line(mi, y + 25, mi, y);
+  fill('black');
   text(label, data.length, y + 25);
 }
 
@@ -145,7 +148,7 @@ function draw() {
   deltaTime = window.performance.now() - canvas._pInst._lastFrameTime;
   timer += deltaTime;
 
-  if (timer >= 500) {
+  if (timer >= 5) {
     timer = 0;
     updatePopGraph();
     updateSpeedGraph();
@@ -203,20 +206,22 @@ class AnimalType {
     this.baseMoveSpeed = random(100);
     this.baseTurnSpeed = random(100);
     this.baseFoodToMate = random(150, 300);
+    this.baseMoveMod = random(1, 3);
   }
 
   makeAnimal() {
-    return new Animal(this.baseradius, this.baseMoveSpeed, this.baseTurnSpeed, this.baseFoodToMate);
+    return new Animal(random(300), random(20, 300), random(100), random(150, 300), random(1, 3));
   }
 }
 
 class Animal {
 
-  constructor(rad, spe, tur, ftm) {
-    this.radius = clampAndSeed(rad);
-    this.moveSpeed = clampAndSeed(spe);
-    this.turnSpeed =  clampAndSeed(tur);
-    this.foodToMate = min(300, max(150, ftm + random(-10, 10)));
+  constructor(rad, spe, tur, ftm, mod) {
+    this.radius = clampAndSeed(rad, 5, 50, 5);
+    this.moveSpeed = clampAndSeed(spe, 20, 300, 5);
+    this.turnSpeed =  clampAndSeed(tur, 5, 50, 5);
+    this.foodToMate = clampAndSeed(ftm, 75, 300, 10);
+    this.moveMod = clampAndSeed(mod, 1, 5, 1);
     this.wantsToMate = false;
     this.children = [];
     this.food = 100;
