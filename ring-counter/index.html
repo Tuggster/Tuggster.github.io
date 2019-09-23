@@ -84,7 +84,7 @@
         for (let i = 0; i < runs; i++) {
           let currentColorMode = false;
           let lowStreak = 0;
-          let stripe = new Array(); // to be used later?
+          let stripe = new Array();
 
           for (let j = 0; j < img.width; j++) {
             stripe.push(img.get((i == 0 ? j : map(centerX, 0, width, 0, img.width)), (i == 0 ? map(centerY, 0, height, 0, img.height) : j)));
