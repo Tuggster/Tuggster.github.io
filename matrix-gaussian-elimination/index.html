@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Gausian Elimination</title>
+
+    <style media="screen">
+      .historyItem {
+          padding: 0px;
+          margin: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Matrix Size</h1>
+    <h2>width</h2>
+    <input type="number" id="width-value" value="4" onchange="updateMatrixSize()">
+    <h2>height</h2>
+    <input type="number" id="height-value" value="3" onchange="updateMatrixSize()">
+    <button type="button" id="go" name="button" onclick="while(phase != 4) {solveMatrix()}">Solve</button>
+    <button type="button" id="go" name="button" onclick="solveMatrix()">Step</button>
+
+    <table id="matrix-input">
+    </table>
+    <div class="" style="padding:0px; margin:0px" id="history-div">
+
+    </div>
+
+    <script type="text/javascript">
+      let widthInput = document.getElementById('width-value');
+      let heightInput = document.getElementById('height-value');
+      let matrixInput = document.getElementById('matrix-input');
+      let historyDiv = document.getElementById('history-div')
+      let matrixState = Array();
+      updateMatrixSize();
+
+      function updateMatrixSize() {
+        matrixState = Array();
+        for (let y = 0; y < heightInput.value; y++) {
+          matrixState.push(Array());
+          for (let x = 0; x < widthInput.value; x++) {
+            matrixState[y][x] = Math.floor(Math.random() * 9 + 1);
+          }
+        }
+        displayMatrixToTable();
+      }
+
+      function displayMatrixToTable() {
+        let len = matrixInput.rows.length; // updates live so must be stored in var!
+        for (let clear = 0; clear < len; clear++) {
+          matrixInput.deleteRow(0);
+        }
+
+        for (let row = heightInput.value - 1; row >= 0; row--) {
+          let r = matrixInput.insertRow(0);
+          for (let cell = widthInput.value - 1; cell >= 0; cell--) {
+            //console.log(row, cell)
+            r.insertCell(0).innerHTML = `<input value="${matrixState[row][cell]}" onchange="insertValues()" id="${row}-${cell}"></input>`;
+          }
+        }
+      }
+
+      function insertValues() {
+        for (let row = 0; row < matrixState.length; row++) {
+          for (let cell = 0; cell < matrixState[0].length; cell++) {
+            // let cellValue = Number(matrixInput.rows[row].cells[cell].innerHTML.split("\"")[1]);
+            let cellValue = document.getElementById(`${row}-${cell}`).value;
+            // matrixState.length -   - 1    matrixState[0].length -    - 1
+            matrixState[row][cell] = Number(cellValue);
+            console.log(cellValue);
+          }
+        }
+      }
+
+      let phase = 0;
+      let rowToSolve = 1;
+      let echeCol = 0;
+      function solveMatrix() {
+        if (phase == 0) {
+          if (matrixState[0][0] == 1) {
+            phase++;
+          } else {
+            multRow(0, 1.0 / matrixState[0][0]);
+          }
+        } else if (phase == 1) {
+
+          if (isInEchelonForm()) {
+            phase++;
+            console.log("Technical completion.");
+            rowToSolve = matrixState.length - 2;
+            return;
+          }
+
+          if (echeCol >= rowToSolve) {
+            console.log("row complete!");
+            rowToSolve++;
+            echeCol = 0;
+          }
+
+          if (rowToSolve >= matrixState.length - 1) {
+            if (echeCol > matrixState[0].length - 3) {
+              phase++;
+              console.log("phase complete!");
+              rowToSolve = matrixState.length - 2;
+            } else {
+              echeCol++;
+              rowToSolve = firstRowOff();
+              console.log("Row complete!");
+              //console.log(rowToSolve);
+            }
+          }
+
+          if (!isRowInEchelon(rowToSolve)) {
+            rowToSolve = firstRowOff();
+            echeCol = firstCharOff(rowToSolve);
+            console.log(echeCol);
+            addRows(rowToSolve, echeCol, -1 * (matrixState[rowToSolve][echeCol] / matrixState[echeCol][echeCol]));
+            if (rowToSolve + 1 < matrixState.length) {
+              rowToSolve++;
+            } else {
+              rowToSolve = firstRowOff();
+              echeCol++;
+            }
+            // console.log(rowToSolve);
+          }
+        } else if (phase == 2) {
+          console.log("running p2!");
+          let done = true;
+          for (let horizontal = matrixState[0].length - 2; horizontal >= 0; horizontal--) {
+            for (let vertical = horizontal - 1; vertical >= 0; vertical--) {
+              console.log(`X1: ${vertical} Y1: ${vertical} X2: ${horizontal} Y2: ${vertical}`);
+              let coeff = -1 * (matrixState[vertical][horizontal] / matrixState[horizontal][horizontal]);
+              if (vertical + 1 < matrixState.length)
+                addRows(vertical, horizontal, coeff)
+              //(matrixState[i][i] / matrixState[i][i])
+            }
+          }
+          phase++;
+          // if (rowToSolve <= -1) {
+          //   phase++;
+          //   console.log("phase complete!");
+          // } else {
+          //   addRows(rowToSolve, rowToSolve + 1, -1 * (matrixState[rowToSolve][rowToSolve + 1] / matrixState[rowToSolve + 1][rowToSolve + 1]));
+          //   console.log(rowToSolve);
+          //   rowToSolve--;
+          // }
+        } else if (phase == 3) {
+          for (let i = 0; i < matrixState.length; i++) {
+            purifyRow(i);
+          }
+          phase++;
+        }
+
+        displayMatrixToTable();
+
+      }
+
+      function firstRowOff() {
+        for (let i = 1; i < matrixState.length; i++) {
+          if (!isRowInEchelon(i)) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
+      function firstCharOff(row) {
+        for (let i = 0; i < matrixState[row].length; i++) {
+          if (matrixState[row][i] != 0) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
+      function purifyRow(row) {
+        multRow(row, 1 / matrixState[row][row]);
+      }
+
+      function isRowInEchelon(row) {
+        for (let i = 0; i < Math.min(row, matrixState[row].length); i++) {
+          if (matrixState[row][i] != 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function isInEchelonForm() {
+        for (let i = 0; i < matrixState.length; i++) {
+          if (!isRowInEchelon(i)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function addRows(lhs, rhs) {
+        if (matrixState[lhs].length != matrixState[rhs].length) {
+          return false;
+        }
+
+        for (let i = 0; i < matrixState[lhs].length; i++) {
+          matrixState[lhs][i] = matrixState[lhs][i] + matrixState[rhs][i];
+        }
+        historyDiv.innerHTML += `<p class="historyItem">r${lhs} = r${lhs} + r${rhs}</p>`;
+        return true;
+      }
+
+      function addRows(lhs, rhs, coeff) {
+        if (matrixState[lhs].length != matrixState[rhs].length) {
+          return false;
+        }
+
+        for (let i = 0; i < matrixState[lhs].length; i++) {
+          matrixState[lhs][i] = matrixState[lhs][i] + matrixState[rhs][i] * coeff;
+        }
+        historyDiv.innerHTML += `<p class="historyItem">r${lhs} = r${lhs} + (${coeff} * r${rhs})</p>`;
+
+        return true;
+      }
+
+      function multRow(row, coeff) {
+        for (let i = 0; i < matrixState[0].length; i++) {
+          matrixState[row][i] = matrixState[row][i] * coeff;
+        }
+        historyDiv.innerHTML += `<p class="historyItem">r${row} = r${row} * ${coeff}</p>`;
+      }
+
+    </script>
+
+  </body>
+</html>
