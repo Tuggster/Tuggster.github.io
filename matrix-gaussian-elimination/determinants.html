@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Matrix Determinant FInder</title>
+  </head>
+  <body>
+    <h1>Matrix Size</h1>
+    <h2>Size:</h2>
+    <input type="number" id="width-value" value="3" onchange="updateMatrixSize()">
+    <br><br><br>
+    <button type="button" id="go" name="button" onclick="alert(findDeterminant(matrixState, 0))">Solve</button>
+    <table id="matrix-input">
+    </table>
+    <div class="" style="padding:0px; margin:0px" id="history-div">
+
+    </div>
+
+    <script type="text/javascript">
+      let widthInput = document.getElementById('width-value');
+      let matrixInput = document.getElementById('matrix-input');
+      let historyDiv = document.getElementById('history-div')
+      let matrixState = Array();
+      updateMatrixSize();
+
+      function updateMatrixSize() {
+        matrixState = Array();
+        for (let y = 0; y < widthInput.value; y++) {
+          matrixState.push(Array());
+          for (let x = 0; x < widthInput.value; x++) {
+            //matrixState[y][x] = Math.floor(Math.random() * 9 + 1);
+            matrixState[y][x] = x + (y * widthInput.value);
+          }
+        }
+        displayMatrixToTable();
+      }
+
+      function displayMatrixToTable() {
+        let len = matrixInput.rows.length; // updates live so must be stored in var!
+        for (let clear = 0; clear < len; clear++) {
+          matrixInput.deleteRow(0);
+        }
+
+        for (let row = widthInput.value - 1; row >= 0; row--) {
+          let r = matrixInput.insertRow(0);
+          for (let cell = widthInput.value - 1; cell >= 0; cell--) {
+            //console.log(row, cell)
+            r.insertCell(0).innerHTML = `<input value="${matrixState[row][cell]}" onchange="insertValues()" id="${row}-${cell}"></input>`;
+          }
+        }
+      }
+
+      function insertValues() {
+        for (let row = 0; row < matrixState.length; row++) {
+          for (let cell = 0; cell < matrixState[0].length; cell++) {
+            // let cellValue = Number(matrixInput.rows[row].cells[cell].innerHTML.split("\"")[1]);
+            let cellValue = document.getElementById(`${row}-${cell}`).value;
+            // matrixState.length -   - 1    matrixState[0].length -    - 1
+            matrixState[row][cell] = Number(cellValue);
+            console.log(cellValue);
+          }
+        }
+      }
+
+
+      function findDeterminant(data, depth) {
+        let size = data.length;
+        let pickedRow = 0;
+        let output = 0;
+
+        for (let i = 0; i < size; i++) {
+          let negator = (0 - i % 2 * 2 + 1 + pickedRow);
+          let sub = getSubmatrix(data, pickedRow, i);
+          let subDet;
+          //console.log(sub);
+          let subDeterminantTimesTop;
+          if (sub.length > 2) {
+            subDet = findDeterminant(sub, depth + 1);
+          } else {
+            subDet = ((sub[0][0] * sub[1][1]) - (sub[0][1] * sub[1][0]));
+          }
+          subDeterminantTimesTop = data[pickedRow][i] * negator * subDet;
+
+          console.log(`L${depth} submatrix evaluated: ${subDeterminantTimesTop} -- Raw: ${subDet}, Inverter: ${negator}`)
+          output += subDeterminantTimesTop;
+        }
+        return output;
+      }
+
+      function getSubmatrix(data, row, col) {
+        let out = Array();
+        for (let arrayInitH = 0; arrayInitH < data.length - 1; arrayInitH++) {
+          out.push(Array());
+        }
+
+        let roffset = 0;
+        for (let i = 0; i < data.length - 1; i++) {
+          let offset = 0;
+          for (let j = 0; j < data.length - 1; j++) {
+            if (j + offset == col) {
+              offset++;
+            }
+
+            if (i + roffset == row) {
+              roffset++;
+            }
+
+            out[i][j] = data[i + roffset][j + offset];
+          }
+        }
+        return out;
+      }
+
+
+
+    </script>
+
+  </body>
+</html>
