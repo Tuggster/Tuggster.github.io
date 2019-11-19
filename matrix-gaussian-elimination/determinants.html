@@ -9,7 +9,9 @@
     <h2>Size:</h2>
     <input type="number" id="width-value" value="3" onchange="updateMatrixSize()">
     <br><br><br>
-    <button type="button" id="go" name="button" onclick="alert(findDeterminant(matrixState, 0))">Solve</button>
+    <button type="button" id="go" name="button" onclick="if(!solvingSystem.checked) { alert(findDeterminant(matrixState, 0)) } else {solveSystem(matrixState)}">Solve</button>
+    <input type="checkbox" id="solve-linear" value="linear" onclick="updateMatrixSize()">Solve system of linear equations.<br>
+    <button type="button" id="go" name="button" onclick="for (let i = 0; i < matrixState.length; i++) {for (let j = 0; j < matrixState[0].length; j++) {matrixState[i][j] = Math.floor(Math.random() * 9 + 1); displayMatrixToTable();}}">Fill with random values</button>
     <table id="matrix-input">
     </table>
     <div class="" style="padding:0px; margin:0px" id="history-div">
@@ -19,17 +21,19 @@
     <script type="text/javascript">
       let widthInput = document.getElementById('width-value');
       let matrixInput = document.getElementById('matrix-input');
-      let historyDiv = document.getElementById('history-div')
+      let historyDiv = document.getElementById('history-div');
+      let solvingSystem = document.getElementById('solve-linear');
       let matrixState = Array();
       updateMatrixSize();
 
       function updateMatrixSize() {
+        let width = Number(widthInput.value) + (solvingSystem.checked ? 1 : 0);
         matrixState = Array();
         for (let y = 0; y < widthInput.value; y++) {
-          matrixState.push(Array());
-          for (let x = 0; x < widthInput.value; x++) {
+          matrixState.push(Array(width));
+          for (let x = 0; x < width; x++) {
             //matrixState[y][x] = Math.floor(Math.random() * 9 + 1);
-            matrixState[y][x] = x + (y * widthInput.value);
+            matrixState[y][x] = (x == widthInput.value ? 0 : x + (y * (width - solvingSystem.checked)));
           }
         }
         displayMatrixToTable();
@@ -43,7 +47,7 @@
 
         for (let row = widthInput.value - 1; row >= 0; row--) {
           let r = matrixInput.insertRow(0);
-          for (let cell = widthInput.value - 1; cell >= 0; cell--) {
+          for (let cell = Number(widthInput.value) + (solvingSystem.checked ? 1 : 0) - 1; cell >= 0; cell--) {
             //console.log(row, cell)
             r.insertCell(0).innerHTML = `<input value="${matrixState[row][cell]}" onchange="insertValues()" id="${row}-${cell}"></input>`;
           }
@@ -85,6 +89,38 @@
           output += subDeterminantTimesTop;
         }
         return output;
+      }
+
+      function solveSystem(data) {
+        let majorDeterminant = findDeterminant(data, 0);
+        let minors = Array();
+        let sidebar = Array();
+        for (let j = 0; j < matrixState.length; j++) { // do not ask why i made this J and not I.
+          let sub = JSON.parse(JSON.stringify(matrixState));
+          console.log(sub);
+          for (let k = 0; k < sub.length; k++) {
+            let popped = sub[k].pop();
+            console.log(popped);
+            if (k == 0)
+              sidebar.push(popped);
+
+            sub[k][j] = popped;
+          }
+          minors.push(findDeterminant(sub));
+          console.log(sidebar, sub, minors);
+
+        }
+        console.log(majorDeterminant, minors);
+
+        let results = Array();
+        let resultText = "";
+        for (let i = 0; i < minors.length; i++) {
+          results.push(minors[i] / majorDeterminant);
+          resultText += `v${i}: ${results[i]}  \n`;
+        }
+        console.log(results);
+        alert(resultText);
+
       }
 
       function getSubmatrix(data, row, col) {
