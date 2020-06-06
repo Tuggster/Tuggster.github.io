@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1>MichaelMatic 9001</h1>
+    <input type="range" min="1" max="1000" value="100" class="slider" id="numberRange">
+    <p>Words to generate:</p> <input type="number" name="" value="100" id="sliderCount">
+    <p id="output">The list: </p>
+    <script type="text/javascript">
+      var request = new XMLHttpRequest();
+      request.open('GET', 'words.txt', false);
+      request.send();
+
+      var textfileContent = request.responseText;
+      var array = textfileContent.split("\n");
+      var slider = document.getElementById('numberRange');
+      var sliderVal = document.getElementById('sliderCount');
+      var output = document.getElementById('output');
+      const letters = /^[A-Za-z]+$/;
+
+      generateList();
+
+      slider.oninput = function() {
+        sliderVal.value = this.value;
+        generateList();
+      }
+
+      sliderVal.oninput = function() {
+        slider.value = this.value;
+        generateList();
+      }
+
+      function generateList() {
+        output.innerHTML = `Words:<br><br>`;
+        for(let i = 0; i < sliderVal.value; i++) {
+            let pos = Math.floor(Math.random() * array.length);
+            if (!meetsConditions(array[pos])) {
+              i--;
+              continue;
+            }
+            output.innerHTML += (`${array[pos]}`); // write
+             if (i != sliderVal.value-1)
+               output.innerHTML += (`,<br>`); // end line
+        }
+        console.log("done.");
+      }
+
+      function meetsConditions(word) {
+        if (word.slice(-1) == "s") {
+          return false;
+        }
+
+        if (getRandomInt(20) == 5)
+          return true;
+
+        if (word.length <= 3) {
+          return false;
+        }
+
+        if (word.length >= 8) {
+          return false;
+        }
+
+        if (!(word.slice(-3) == "ing" || word.slice(-2) == "ed")) {
+          return false;
+        }
+
+        if (!word.match(letters)) {
+          return false;
+        }
+
+        return true;
+      }
+
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+      }
+
+    </script>
+  </body>
+</html>
