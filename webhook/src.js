@@ -66,6 +66,10 @@ function sendRequest() {
           console.log("fuckers are ratelimiting us...")
           status.style.color = "red";
           status.innerHTML = `status: ratelimited! (${msg.retry_after}ms)`;
+        } else if (msg.message == "Unknown Webhook") {
+          status.style.color = "red";
+          status.innerHTML = `status: webhook deleted!`;
+          alert("Hard stopped. Webhook deleted.");
         }
       } else {
          setTimeout(() => {  sendRequest(); }, (1000/document.getElementById('speed').value));
