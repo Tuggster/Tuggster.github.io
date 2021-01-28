@@ -70,7 +70,7 @@ function sendRequest() {
       } else {
          setTimeout(() => {  sendRequest(); }, (1000/document.getElementById('speed').value));
          status.style.color = "green";
-         status.innerHTML = `status: running! (${1000/document.getElementById('speed').value}ms)`;
+         status.innerHTML = `status: running! (${1000/document.getElementById('speed').value}ms)`; // wtf is a variable???
       }
     }
   };
