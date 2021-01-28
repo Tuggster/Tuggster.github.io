@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>TayviTron9000</title>
+    <script src="src.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>MondoPOSTer</h1>
+    <h2>it's ugly but it gets the job done right</h2>
+    <input type="text" id="address" value="" placeholder="put yo webhook address here foo"><br>
+    <input type="text" id="message" value="" placeholder="message goes here idjit"><br>
+    <input type="text" id="username" value="" placeholder="username goes here idjit"><br>
+    <input type="text" id="pfp" value="" placeholder="profile pic (link!)"><br>
+    <h3>we're too lazy for labels. this slider is messages/second, ranging from 1 to 25. slow it down if you have issues. Default is 5.</h3>
+    <input type="range" id="speed" value="" min="1" max="25" value="5">
+    <button type="button" id="send" onclick="update(); sendRequest()">Send 1 (for testing)</button><br>
+    <button type="button" id="send" onclick="run()">start</button>
+    <button type="button" id="stop" onclick="halt()">stop</button>
+    <button type="button" id="stop" onclick="update()">update properties</button>
+    <h3 style="color: orange" id="status">status: stopped!</h3>
+  </body>
+</html>
