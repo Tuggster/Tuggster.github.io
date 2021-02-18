@@ -49,7 +49,7 @@ function sendRequest() {
   xhr = createCORSRequest('POST', `${address}`);
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-  let params = `content=${message}&username=${username+" "+name}&avatar_url=${pfp}`;
+  let params = `content=${message}&username=${username+" "}&avatar_url=${pfp}`;
   xhr.onload = function () {
     console.log(this.responseText)
     let msg;
