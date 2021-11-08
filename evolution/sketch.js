@@ -355,25 +355,25 @@ class Animal {
 
           let newRadius = 0, newSpeed = 0, newTurn = 0, newFTM = 0;
 
-          if (floor(random(0, 100)) == 50) {
+          if (floor(random(0, 15)) == 5) {
             newRadius = random(0, 50);
           } else {
             newRadius = (this.radius + this.mateTarget.radius) / 2;
           }
 
-          if (floor(random(0, 100)) == 50) {
+          if (floor(random(0, 15)) == 5) {
             newSpeed = random(0, 100);
           } else {
             newSpeed = (this.moveSpeed + this.mateTarget.moveSpeed) / 2;
           }
 
-          if (floor(random(0, 100)) == 50) {
+          if (floor(random(0, 15)) == 5) {
             newTurn = random(0, 100);
           } else {
             newTurn = (this.turnSpeed + this.mateTarget.turnSpeed) / 2;
           }
 
-          if (floor(random(0, 100)) == 50) {
+          if (floor(random(0, 15)) == 5) {
             newFTM = random(100, 250);
           } else {
             newFTM = (this.foodToMate + this.mateTarget.foodToMate) / 2;
