@@ -225,6 +225,7 @@ class Animal {
     this.wantsToMate = false;
     this.children = [];
     this.food = 100;
+    this.age = 0;
 
     this.generation = 0;
     this.type = 0;
@@ -283,6 +284,7 @@ class Animal {
     let best = null;
     let b = 999999999;
 
+    this.age += 1;
     if (food.length > 0) {
       for (let i = 0; i < food.length; i++){
         let t = food[i];
@@ -312,7 +314,7 @@ class Animal {
         this.mode = 1;
       }
 
-      if (this.food >= this.foodToMate) {
+      if (this.food >= this.foodToMate && this.age >= 500) {
         this.mode = 1;
         this.wantsToMate = true;
       }
