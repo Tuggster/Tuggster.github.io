@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<style media="screen">
+  .controls {
+    width: fit-content;
+    padding: 15px;
+    background-color: #BDBDBD;
+  }
+
+  body {
+    overflow: hidden; /* Hide scrollbars */
+  }
+
+</style>
+  <head>
+    <meta charset="utf-8">
+    <title>Sweep</title>
+  </head>
+  <body>
+
+    <body oncontextmenu="return false;">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <script src="cell.js"></script>
+    <script src="game.js"></script>
+    <script type="text/javascript">
+      let game = new MinesweeperRound(16,16,40);
+      let border = 25;
+      let lastClick = 0;
+      function setup() {
+        let canvasHTML = createCanvas(screenWidth, screenHeight);
+        let canvasElement = canvasHTML.elt;
+        canvasElement.style.border = `${border}px solid #BDBDBD`; // adjust as needed
+        canvasElement.class = 'game';
+
+
+        ellipseMode(CENTER);
+
+        let context = canvasElement.getContext('2d');
+        context.mozImageSmoothingEnabled = false;
+        context.webkitImageSmoothingEnabled = false;
+        context.msImageSmoothingEnabled = false;
+        context.imageSmoothingEnabled = false;
+
+        bombColors.push(color(0, 0, 255));
+        bombColors.push(color(0, 128, 0));
+        bombColors.push(color(255, 0, 0));
+        bombColors.push(color(0, 0, 130));
+        bombColors.push(color(128, 0, 0));
+        bombColors.push(color(0, 128, 128));
+        bombColors.push(color(0, 0, 0));
+        bombColors.push(color(128, 128, 128));
+
+        p5Init = true;
+        resizeCanvas(displayWidth - border * 2, displayHeight - border * 2);
+        game = new MinesweeperRound(16,16,40);
+      }
+
+      function draw() {
+        background(255);
+        game.drawGame();
+        let mX = Math.floor((mouseX - border) / cellSize);
+        let mY = Math.floor((mouseY - border) / cellSize);
+
+        if (mX < 0 || mX >= game.width || mY < 0 || mY >= game.height) {
+          return;
+        }
+
+        if (!gameOver) {
+          if(mouseIsPressed == 1) {
+            game.peekCell(mX, mY);
+          } else if (lastClick == 1 && mouseIsPressed == 0) {
+            if (mouseButton === LEFT) {
+              game.peekCell(mX, mY);
+              game.revealCell(mX, mY);
+              console.log("Started")
+            } else if (mouseButton === RIGHT) {
+              game.flagCell(mX, mY);
+            }
+          }
+          game.winCheck();
+        }
+        lastClick = mouseIsPressed;
+      }
+
+      function newGame() {
+        let ngW = document.getElementById('widthBox').value;
+        let ngH = document.getElementById('heightBox').value;
+        let ngM = document.getElementById('mineBox').value;
+
+        game = new MinesweeperRound(ngW, ngH, ngM);
+      }
+    </script>
+
+    <!-- <div id="controlDiv" class="controls">
+      Width <input type="text" id="widthBox" value="16" placeholder="Width"><br>
+      Height <input type="text" id="heightBox" value="16" placeholder="Height"><br>
+      Mines <input type="text" id="mineBox" value="40" placeholder="Mines"><br>
+      <button type="button" name="button" onclick="newGame();">PLAY</button>
+    </div> -->
+  </body>
+</html>
