@@ -3,20 +3,25 @@ let bombImgs = Array();
 let blank;
 
 function preload() {
-  clearedCell = loadImage('https://i.imgur.com/a8cVysZ.png');
-  bombCell = loadImage('https://i.imgur.com/3m0TKv3.png');
-  fatalCell = loadImage('https://i.imgur.com/VJq0d4l.png');
-  falseCell = loadImage('https://i.imgur.com/kSLCGsi.png');
-  blankCell = loadImage('https://i.imgur.com/rCom2pY.png');
-  flagCell = loadImage('https://i.imgur.com/drReo3m.png');
-  oneCell = loadImage('https://i.imgur.com/PaKE6DE.png');
-  twoCell = loadImage('https://i.imgur.com/wH1tS9k.png');
-  threeCell = loadImage('https://i.imgur.com/1cCp7kB.png');
-  fourCell = loadImage('https://i.imgur.com/93MD2kz.png');
-  fiveCell = loadImage('https://i.imgur.com/5CNPOpL.png');
-  sixCell = loadImage('https://i.imgur.com/cyQbD0m.png');
-  sevenCell = loadImage('https://i.imgur.com/WSx66zX.png');
-  eightCell = loadImage('https://i.imgur.com/U0v7ufG.png');
+  clearedCell = loadImage('../imgs/cleared.png');
+  bombCell = loadImage('../imgs/bomb.png');
+  fatalCell = loadImage('../imgs/fatal.png');
+  falseCell = loadImage('../imgs/false.png');
+  blankCell = loadImage('../imgs/empty.png');
+  flagCell = loadImage('../imgs/flag.png');
+  oneCell = loadImage('../imgs/1.png');
+  twoCell = loadImage('../imgs/2.png');
+  threeCell = loadImage('../imgs/3.png');
+  fourCell = loadImage('../imgs/4.png');
+  fiveCell = loadImage('../imgs/5.png');
+  sixCell = loadImage('../imgs/6.png');
+  sevenCell = loadImage('../imgs/7.png');
+  eightCell = loadImage('../imgs/8.png');
+  faceNormal = loadImage('../imgs/face1.png');
+  facePeek = loadImage('../imgs/face2.png');
+  faceWin = loadImage('../imgs/face3.png');
+  faceDead = loadImage('../imgs/face4.png');
+
   // Imgur Album: https://imgur.com/a/mkgzVCo
   bombImgs.push(oneCell);
   bombImgs.push(twoCell);
@@ -26,8 +31,6 @@ function preload() {
   bombImgs.push(sixCell);
   bombImgs.push(sevenCell);
   bombImgs.push(eightCell);
-
-  blankCell.resizeNN(150,0);
 }
 
 
@@ -57,7 +60,7 @@ class Cell {
 
   draw() {
     let cX = this.x * cellSize;
-    let cY = this.y * cellSize;
+    let cY = this.y * cellSize + headerSize;
 
     if (this.revealed  && !this.flagged) {
       if (this.mine) {

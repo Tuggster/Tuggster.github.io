@@ -1,5 +1,5 @@
-let screenWidth = 1000;
-let screenHeight = 1000;
+let screenWidth = 100;
+let screenHeight = 100;
 let screenConstraint = 0;
 let p5Init = false;
 
@@ -7,6 +7,7 @@ let cellSize = 0;
 
 let startReserved = 1;
 let gameOver = false;
+let won = false;
 
 
 class MinesweeperRound {
@@ -16,10 +17,11 @@ class MinesweeperRound {
     this.height = height;
     this.hasStart = false;
     gameOver = false;
+    won = false;
 
     this.grid = Array();
-
     this.initGame();
+    console.log(screenWidth, screenHeight)
   }
 
   initGame() {
@@ -33,8 +35,10 @@ class MinesweeperRound {
 
     if (trF >= trC) {
       cellSize = screenWidth / this.width;
+      screenConstraint = 0;
     } else {
       cellSize = screenHeight / this.height;
+      screenConstraint = 1;
     }
 
     cellSize = Math.floor(cellSize);
@@ -43,8 +47,10 @@ class MinesweeperRound {
     for(let i = 0; i < this.width * this.height; i++) {
       this.grid[i] = new Cell(i % this.width, Math.floor(i / this.width), false);
     }
+    headerSize = cellSize * 3;
+    border = cellSize * (5/8);
     if (p5Init) {
-      resizeCanvas(cellSize * this.width, cellSize*this.height);
+      //resizeCanvas(cellSize * this.width, cellSize*this.height);
     }
   }
 
@@ -60,8 +66,8 @@ class MinesweeperRound {
     }
 
     if (incomplete == 0) {
-      alert("victory!");
       gameOver = true;
+      won = true;
     }
     return incomplete;
   }
@@ -108,88 +114,74 @@ class MinesweeperRound {
     }
    }
 
-  peekCell(x,y) {
-    let gX = x * cellSize;
-    let gY = y * cellSize;
-    let gCell = this.grid[x + y * this.width];
-    if (!gCell.revealed && !gCell.flagged) {
-      image(clearedCell, gX, gY, cellSize, cellSize);
-    }
-  }
+   drawHUD() {
+     fill(189, 189, 189, 255);
+     noStroke();
+     rect(0, headerSize - border, screenWidth, border);
 
-  flagCell(x, y) {
-    let gCell = this.grid[x + y * this.width];
-    if (!gCell.revealed) {
-      gCell.flagged = !gCell.flagged;
-    }
-  }
+     let faceImg;
+     if (!gameOver) {
+       if (mouseIsPressed) {
+         faceImg = facePeek;
+       } else {
+         faceImg = faceNormal
+       }
+     } else {
+       if (won) {
+         faceImg = faceWin;
+       } else {
+         faceImg = faceDead;
+       }
+     }
+     let faceSize = cellSize * 2;
+     image(faceImg, (cellSize * game.width) / 2 - cellSize, (headerSize - border) / 2 - cellSize, faceSize, faceSize);
+   }
 
-  seedGame() {
-    for (let i = 0; i < this.mines; 0) {
-      let mI = Math.floor(Math.random() * this.grid.length);
+   peekCell(x,y) {
+     let gX = x * cellSize;
+     let gY = y * cellSize + headerSize;
+     let gCell = this.grid[x + y * this.width];
+     if (!gCell.revealed && !gCell.flagged) {
+       image(clearedCell, gX, gY, cellSize, cellSize);
+     }
+   }
 
-      if (this.grid[mI].count >= 0 && !this.grid[mI].reserved) {
-        this.grid[mI].mine = true;
-        i++;
-      } else {
-        continue;
-      }
-    }
+   flagCell(x, y) {
+     let gCell = this.grid[x + y * this.width];
+     if (!gCell.revealed) {
+       gCell.flagged = !gCell.flagged;
+     }
+   }
 
-    for (let i = 0; i < this.grid.length; i++) {
-      this.grid[i].calculateNearby();
-    }
-  }
+   seedGame() {
+     for (let i = 0; i < this.mines; 0) {
+       let mI = Math.floor(Math.random() * this.grid.length);
 
-  drawGame() {
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
-        let cell = this.grid[x + y * this.width];
-        cell.draw();
-      }
-    }
-  }
+       if (this.grid[mI].count >= 0 && !this.grid[mI].reserved) {
+         this.grid[mI].mine = true;
+         i++;
+       } else {
+         continue;
+       }
+     }
+
+     for (let i = 0; i < this.grid.length; i++) {
+       this.grid[i].calculateNearby();
+     }
+   }
+
+   drawGame() {
+     for (let x = 0; x < this.width; x++) {
+       for (let y = 0; y < this.height; y++) {
+         let cell = this.grid[x + y * this.width];
+         cell.draw();
+       }
+     }
+   }
 }
 
 
-p5.Image.prototype.resizeNN = function(width, height) {
-  if (width === 0 && height === 0) {
-    width = this.canvas.width;
-    height = this.canvas.height;
-  } else if (width === 0) {
-    width = this.canvas.width * height / this.canvas.height;
-  } else if (height === 0) {
-    height = this.canvas.height * width / this.canvas.width;
-  }
-
-  width = Math.floor(width);
-  height = Math.floor(height);
-
-  var temp = createImage(width,height),
-    xScale = width / this.width ,
-    yScale = height / this.height
-
-  this.loadPixels()
-  temp.loadPixels()
-  for(var x=0; x<temp.width; x++) {
-    for(var y=0; y<temp.height; y++) {
-      var sourceInd = 4*(Math.floor(y/yScale)*this.width + Math.floor(x/xScale))
-      var targetInd = 4*(y*temp.width + x)
-      var sourceP = this.pixels.slice(sourceInd,sourceInd+4)//this.get(x/wScale, y/hScale)
-      temp.pixels[targetInd] = sourceP[0]
-      temp.pixels[targetInd+1] = sourceP[1]
-      temp.pixels[targetInd+2] = sourceP[2]
-      temp.pixels[targetInd+3] = sourceP[3]
-    }
-  }
-  temp.updatePixels()
-  this.updatePixels()
-
-  this.canvas.width = this.width = width;
-  this.canvas.height = this.height = height;
-
-  this.drawingContext.drawImage(temp.canvas,
-    0, 0, width, height,
-    0, 0, width, height
-  )
-};
+function isMobile() {
+  try{ document.createEvent("TouchEvent"); return true; }
+  catch(e){ return false; }
+}

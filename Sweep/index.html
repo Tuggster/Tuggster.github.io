@@ -7,12 +7,67 @@
     background-color: #BDBDBD;
   }
 
+  .vertical-center {
+    display: block;
+    margin: auto;
+    /* width: 100%; */
+  }
+
+  .btn-container {
+    outline: 15px solid #BDBDBD;
+    height: fit-content;
+    display: inline-block;
+  }
+
+  .play-button {
+    margin-bottom: 15px;
+  }
+
+
   body {
     overflow: hidden; /* Hide scrollbars */
   }
 
+  canvas {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      outline: none;
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+  }
+
+  * {
+    touch-action: manipulation;
+  }
+
+  ::selection {
+    color: none;
+    background: none;
+  }
+  /* For Mozilla Firefox */
+  ::-moz-selection {
+      color: none;
+      background: none;
+  }
+
+  * { margin: 0; padding: 0;}
+
+  body, html { height:100%; }
+
+  #defaultCanvas0 {
+      position:absolute;
+      width:100%;
+      height:100%;
+  }
+
+
+
 </style>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta charset="utf-8">
     <title>Sweep</title>
   </head>
@@ -22,17 +77,39 @@
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
     <script src="cell.js"></script>
     <script src="game.js"></script>
+
+    <!-- <div class="btn-container" style="width:100%">
+      <img src="../imgs/face1.png" alt="" id="resetButton" class="vertical-center play-button" onclick="newGame()">
+    </div> -->
+    <main>
+      <canvas id="defaultCanvas0" width="300" height="300"></canvas>
+    </main>
+
     <script type="text/javascript">
-      let game = new MinesweeperRound(16,16,40);
-      let border = 25;
+      let game;
+      let border = 15;
       let lastClick = 0;
+      let touch = false;
+      let touchTimer = 0;
+      let hasScrolled = false;
+      let xStart;
+      let yStart;
+      let headerSize = 100;
+
       function setup() {
-        let canvasHTML = createCanvas(screenWidth, screenHeight);
+        let canvasHTML = document.getElementById('defaultCanvas0');//createCanvas(windowWidth - border*2, windowHeight - border*2);
+        canvasHTML = createCanvas(windowWidth - border*2, windowHeight - border*2);
+        document.getElementById('defaultCanvas0').remove();
+
+
         let canvasElement = canvasHTML.elt;
-        canvasElement.style.border = `${border}px solid #BDBDBD`; // adjust as needed
-        canvasElement.class = 'game';
+        canvasElement.parentElement.style.border = `${border}px solid #BDBDBD`; // adjust as needed
+        canvasElement.parentElement.style.width = `calc(100% - ${border*2}px)`; // adjust as needed
+        canvasElement.parentElement.style.height = `calc(100% - ${border*2}px)`; // adjust as needed
+        canvasElement.parentElement.class = 'game';
 
-
+        document.getElementById('defaultCanvas1').id = 'defaultCanvas0';
+        canvasHTML = document.getElementById('defaultCanvas0');//createCanvas(windowWidth - border*2, windowHeight - border*2);
         ellipseMode(CENTER);
 
         let context = canvasElement.getContext('2d');
@@ -49,53 +126,139 @@
         bombColors.push(color(0, 128, 128));
         bombColors.push(color(0, 0, 0));
         bombColors.push(color(128, 128, 128));
+        screenWidth = windowWidth - border*2;
+        screenHeight = windowHeight - border*2 - headerSize;
+        game = new MinesweeperRound(30, 16,99);
+        // if (screenConstraint) {
+        // rButton.style.width = `${cellSize}px`;
+        // rButton.style.height = `${cellSize}px`;
+        canvasElement.parentElement.style.width = `${cellSize * game.width}px`; // adjust as needed
+        canvasElement.parentElement.style.height = `${cellSize * game.height + headerSize}px`; // adjust as needed
+        resizeCanvas(cellSize * game.width, cellSize * game.height + headerSize);
+        // } else {
+        //   canvasElement.parentElement.style.height = `${cellSize * game.height}px`; // adjust as needed
+        //   resizeCanvas(cellSize * game.width, cellSize * game.height);
+        // }
+        touch = isMobile();
 
-        p5Init = true;
-        resizeCanvas(displayWidth - border * 2, displayHeight - border * 2);
-        game = new MinesweeperRound(16,16,40);
       }
+      // let rButton = document.getElementById('resetButton');
 
       function draw() {
         background(255);
         game.drawGame();
-        let mX = Math.floor((mouseX - border) / cellSize);
-        let mY = Math.floor((mouseY - border) / cellSize);
+        game.drawHUD();
+        let mX = Math.floor((mouseX) / cellSize);
+        let mY = Math.floor((mouseY - headerSize) / cellSize);
 
         if (mX < 0 || mX >= game.width || mY < 0 || mY >= game.height) {
           return;
         }
 
         if (!gameOver) {
-          if(mouseIsPressed == 1) {
-            game.peekCell(mX, mY);
-          } else if (lastClick == 1 && mouseIsPressed == 0) {
-            if (mouseButton === LEFT) {
-              game.peekCell(mX, mY);
-              game.revealCell(mX, mY);
-              console.log("Started")
-            } else if (mouseButton === RIGHT) {
-              game.flagCell(mX, mY);
-            }
+          if (mouseIsPressed == 0 && lastClick) {
+            // rButton.src = faceNormal;
           }
+
+          if ((touches.length > 0 || mouseIsPressed) && !lastClick) {
+            xStart = mX;
+            yStart = mY;
+            hasScrolled = false;
+          }
+
+          if (!touch) {
+            if(mouseIsPressed == 1) {
+              game.peekCell(mX, mY);
+              if (!lastClick)
+                // rButton.src = facePeek;
+
+              if (mX != xStart || mY != yStart) {
+                peekRadius(xStart, yStart);
+              }
+            } else if (lastClick == 1 && mouseIsPressed == 0) {
+              if (mouseButton === LEFT) {
+                game.peekCell(mX, mY);
+                game.revealCell(mX, mY);
+                console.log("Started")
+              } else if (mouseButton === RIGHT) {
+                game.flagCell(mX, mY);
+              }
+            }
+          } else {
+            if (touches.length == 0 && lastClick && !hasScrolled && (xStart == mX && yStart == mY)) {
+              if (touchTimer <= 0.15 * 1000) {
+                game.revealCell(mX, mY);
+              } else {
+                game.flagCell(mX, mY);
+              }
+            }
+
+            if (touches.length > 0) {
+              touchTimer += deltaTime;
+            } else {
+              touchTimer = 0;
+            }
+           }
           game.winCheck();
+        } else {
+          if (won) {
+            // rButton.src = faceWin;
+          } else {
+            // rButton.src = faceDead;
+          }
         }
-        lastClick = mouseIsPressed;
+        lastClick = mouseIsPressed || (touches.length != 0);
       }
+
+      function peekRadius(px, py) {
+        for (let x = -1; x <= 1; x++) {
+          for (let y = -1; y <= 1; y++) {
+            let iX = x + px;
+            let iY = y + py;
+            let cX = iX * cellSize;
+            let cY = iY * cellSize + 200;
+
+            if (x == 0 && y == 0)
+              continue;
+
+            if (iX < 0 || iX > game.width || iY < 0 || iY > game.height)
+              continue;
+
+            let cell = game.grid[iX + iY * game.width];
+
+            if (cell.revealed || cell.flagged) {
+              fill(0, 255, 0, 50);
+            } else {
+              fill(255, 0, 0, 50);
+            }
+
+            rect(cX, cY, cellSize);
+          }
+        }
+      }
+
+      function touchMoved() {
+        hasScrolled = true;
+      }
+
 
       function newGame() {
-        let ngW = document.getElementById('widthBox').value;
-        let ngH = document.getElementById('heightBox').value;
-        let ngM = document.getElementById('mineBox').value;
+        // rButton.src = faceNormal;
+        game = new MinesweeperRound(16, 30, 99);
+      }
 
-        game = new MinesweeperRound(ngW, ngH, ngM);
+      function fitToContainer(canvas){
+        // canvas.style('width:100%');
+        // canvas.style('height:100%');
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
       }
     </script>
-
-    <div id="controlDiv" class="controls">
+    <!-- <div id="controlDiv" class="controls">
       Width <input type="text" id="widthBox" value="16" placeholder="Width"><br>
       Height <input type="text" id="heightBox" value="16" placeholder="Height"><br>
       Mines <input type="text" id="mineBox" value="40" placeholder="Mines"><br>
       <button type="button" name="button" onclick="newGame();">PLAY</button>
-    </div>
+    </div> -->
   </body>
 </html>
