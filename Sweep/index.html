@@ -169,19 +169,29 @@
           if (!touch) {
             if(mouseIsPressed == 1) {
               game.peekCell(mX, mY);
-              if (!lastClick)
-                // rButton.src = facePeek;
-
+              // if (!lastClick)
+              //   // rButton.src = facePeek;
               if (mX != xStart || mY != yStart) {
-                peekRadius(xStart, yStart);
+                peekRadius(xStart, yStart, false);
               }
             } else if (lastClick == 1 && mouseIsPressed == 0) {
               if (mouseButton === LEFT) {
                 game.peekCell(mX, mY);
-                game.revealCell(mX, mY);
-                console.log("Started")
+                if (mX != xStart || mY != yStart) {
+                  let cell = game.grid[xStart + yStart * game.width];
+                  if (cell.revealed)
+                    peekRadius(xStart, yStart, "reveal");
+                } else {
+                  game.revealCell(mX, mY);
+                }
               } else if (mouseButton === RIGHT) {
-                game.flagCell(mX, mY);
+                if (mX != xStart || mY != yStart) {
+                  let cell = game.grid[xStart + yStart * game.width];
+                  if (cell.revealed)
+                    peekRadius(xStart, yStart, "flag");
+                } else {
+                  game.flagCell(mX, mY);
+                }
               }
             }
           } else {
@@ -210,13 +220,13 @@
         lastClick = mouseIsPressed || (touches.length != 0);
       }
 
-      function peekRadius(px, py) {
+      function peekRadius(px, py, show) {
         for (let x = -1; x <= 1; x++) {
           for (let y = -1; y <= 1; y++) {
             let iX = x + px;
             let iY = y + py;
             let cX = iX * cellSize;
-            let cY = iY * cellSize + 200;
+            let cY = iY * cellSize + headerSize;
 
             if (x == 0 && y == 0)
               continue;
@@ -226,10 +236,20 @@
 
             let cell = game.grid[iX + iY * game.width];
 
+            console.log("radius");
+
             if (cell.revealed || cell.flagged) {
               fill(0, 255, 0, 50);
             } else {
               fill(255, 0, 0, 50);
+            }
+
+            if (show === "flag") {
+              if (!cell.revealed && !cell.flagged)
+                game.flagCell(iX, iY);
+            } else if (show === "reveal") {
+              if (!cell.flagged)
+                game.revealCell(iX, iY);
             }
 
             rect(cX, cY, cellSize);
