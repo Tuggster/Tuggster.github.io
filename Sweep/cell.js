@@ -3,24 +3,24 @@ let bombImgs = Array();
 let blank;
 
 function preload() {
-  clearedCell = loadImage('../Sweep/imgs/cleared.png');
-  bombCell = loadImage('../Sweep/imgs/bomb.png');
-  fatalCell = loadImage('../Sweep/imgs/fatal.png');
-  falseCell = loadImage('../Sweep/imgs/false.png');
-  blankCell = loadImage('../Sweep/imgs/empty.png');
-  flagCell = loadImage('../Sweep/imgs/flag.png');
-  oneCell = loadImage('../Sweep/imgs/1.png');
-  twoCell = loadImage('../Sweep/imgs/2.png');
-  threeCell = loadImage('../Sweep/imgs/3.png');
-  fourCell = loadImage('../Sweep/imgs/4.png');
-  fiveCell = loadImage('../Sweep/imgs/5.png');
-  sixCell = loadImage('../Sweep/imgs/6.png');
-  sevenCell = loadImage('../Sweep/imgs/7.png');
-  eightCell = loadImage('../Sweep/imgs/8.png');
-  faceNormal = loadImage('../Sweep/imgs/face1.png');
-  facePeek = loadImage('../Sweep/imgs/face2.png');
-  faceWin = loadImage('../Sweep/imgs/face3.png');
-  faceDead = loadImage('../Sweep/imgs/face4.png');
+  clearedCell = loadImage('./imgs/cleared.png');
+  bombCell = loadImage('./imgs/bomb.png');
+  fatalCell = loadImage('./imgs/fatal.png');
+  falseCell = loadImage('./imgs/false.png');
+  blankCell = loadImage('./imgs/empty.png');
+  flagCell = loadImage('./imgs/flag.png');
+  oneCell = loadImage('./imgs/1.png');
+  twoCell = loadImage('./imgs/2.png');
+  threeCell = loadImage('./imgs/3.png');
+  fourCell = loadImage('./imgs/4.png');
+  fiveCell = loadImage('./imgs/5.png');
+  sixCell = loadImage('./imgs/6.png');
+  sevenCell = loadImage('./imgs/7.png');
+  eightCell = loadImage('./imgs/8.png');
+  faceNormal = loadImage('./imgs/face1.png');
+  facePeek = loadImage('./imgs/face2.png');
+  faceWin = loadImage('./imgs/face3.png');
+  faceDead = loadImage('./imgs/face4.png');
 
   // Imgur Album: https://imgur.com/a/mkgzVCo
   bombImgs.push(oneCell);
