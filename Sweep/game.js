@@ -25,11 +25,6 @@ class MinesweeperRound {
   }
 
   initGame() {
-    // if (screenConstraint == 0) {
-    //   cellSize = screenWidth / this.width;
-    // } else {
-    //   cellSize = screenHeight / this.height;
-    // }
     let trF = screenHeight / screenWidth;
     let trC = this.height / this.width;
 
@@ -49,9 +44,6 @@ class MinesweeperRound {
     }
     headerSize = cellSize * 3;
     border = cellSize * (5/8);
-    if (p5Init) {
-      //resizeCanvas(cellSize * this.width, cellSize*this.height);
-    }
   }
 
   winCheck() {
