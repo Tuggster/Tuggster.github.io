@@ -17,10 +17,10 @@ function preload() {
   sixCell = loadImage('../Sweep/imgs/6.png');
   sevenCell = loadImage('../Sweep/imgs/7.png');
   eightCell = loadImage('../Sweep/imgs/8.png');
-  faceNormal = loadImage('../sweep/imgs/face1.png');
-  facePeek = loadImage('../sweep/imgs/face2.png');
-  faceWin = loadImage('../sweep/imgs/face3.png');
-  faceDead = loadImage('../sweep/imgs/face4.png');
+  faceNormal = loadImage('../Sweep/imgs/face1.png');
+  facePeek = loadImage('../Sweep/imgs/face2.png');
+  faceWin = loadImage('../Sweep/imgs/face3.png');
+  faceDead = loadImage('../Sweep/imgs/face4.png');
 
   // Imgur Album: https://imgur.com/a/mkgzVCo
   bombImgs.push(oneCell);
