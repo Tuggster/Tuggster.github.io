@@ -1,5 +1,6 @@
 let bombColors = Array();
 let bombImgs = Array();
+let numImages = Array();
 let blank;
 
 function preload() {
@@ -21,6 +22,25 @@ function preload() {
   facePeek = loadImage('./imgs/face2.png');
   faceWin = loadImage('./imgs/face3.png');
   faceDead = loadImage('./imgs/face4.png');
+  corner1 = loadImage('./imgs/corner1.png');
+  corner2 = loadImage('./imgs/corner2.png');
+  corner3 = loadImage('./imgs/corner3.png');
+  corner4 = loadImage('./imgs/corner4.png');
+  corner5 = loadImage('./imgs/corner5.png');
+  corner6 = loadImage('./imgs/corner6.png');
+  edge = loadImage('./imgs/edge.png');
+  edgeSide = loadImage('./imgs/edgeright.png');
+  number0 = loadImage('./imgs/number0.png');
+  number1 = loadImage('./imgs/number1.png');
+  number2 = loadImage('./imgs/number2.png');
+  number3 = loadImage('./imgs/number3.png');
+  number4 = loadImage('./imgs/number4.png');
+  number5 = loadImage('./imgs/number5.png');
+  number6 = loadImage('./imgs/number6.png');
+  number7 = loadImage('./imgs/number7.png');
+  number8 = loadImage('./imgs/number8.png');
+  number9 = loadImage('./imgs/number9.png');
+  numberDash = loadImage('./imgs/numberdash.png');
 
   // Imgur Album: https://imgur.com/a/mkgzVCo
   bombImgs.push(oneCell);
@@ -31,6 +51,18 @@ function preload() {
   bombImgs.push(sixCell);
   bombImgs.push(sevenCell);
   bombImgs.push(eightCell);
+
+  numImages.push(number0);
+  numImages.push(number1);
+  numImages.push(number2);
+  numImages.push(number3);
+  numImages.push(number4);
+  numImages.push(number5);
+  numImages.push(number6);
+  numImages.push(number7);
+  numImages.push(number8);
+  numImages.push(number9);
+  numImages.push(numberDash);
 }
 
 

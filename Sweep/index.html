@@ -67,9 +67,11 @@
 
 </style>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta charset="utf-8">
-    <title>Sweep</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> -->
+    <meta content='True' name='HandheldFriendly' />
+    <meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
+  <title>Sweep</title>
   </head>
   <body>
 
@@ -94,7 +96,7 @@
       let hasScrolled = false;
       let xStart;
       let yStart;
-      let headerSize = 100;
+      let headerSize = 80;
 
       function setup() {
         let canvasHTML = document.getElementById('defaultCanvas0');//createCanvas(windowWidth - border*2, windowHeight - border*2);
@@ -103,7 +105,7 @@
 
 
         let canvasElement = canvasHTML.elt;
-        canvasElement.parentElement.style.border = `${border}px solid #BDBDBD`; // adjust as needed
+        // canvasElement.parentElement.style.border = `${border}px solid #BDBDBD`; // adjust as needed
         canvasElement.parentElement.style.width = `calc(100% - ${border*2}px)`; // adjust as needed
         canvasElement.parentElement.style.height = `calc(100% - ${border*2}px)`; // adjust as needed
         canvasElement.parentElement.class = 'game';
@@ -134,7 +136,7 @@
         // rButton.style.height = `${cellSize}px`;
         canvasElement.parentElement.style.width = `${cellSize * game.width}px`; // adjust as needed
         canvasElement.parentElement.style.height = `${cellSize * game.height + headerSize}px`; // adjust as needed
-        resizeCanvas(cellSize * game.width, cellSize * game.height + headerSize);
+        resizeCanvas(cellSize * game.width + border * 2, cellSize * game.height + headerSize + border * 2);
         // } else {
         //   canvasElement.parentElement.style.height = `${cellSize * game.height}px`; // adjust as needed
         //   resizeCanvas(cellSize * game.width, cellSize * game.height);
@@ -145,11 +147,23 @@
       // let rButton = document.getElementById('resetButton');
 
       function draw() {
+        push();
+        translate(border, border);
         background(255);
         game.drawGame();
+        clickLogic();
+        if ((!mouseIsPressed || touches.count == 0) && lastClick) {
+          buttonLogic();
+        }
+        lastClick = mouseIsPressed || (touches.length != 0);
+        pop();
         game.drawHUD();
-        let mX = Math.floor((mouseX) / cellSize);
-        let mY = Math.floor((mouseY - headerSize) / cellSize);
+
+      }
+
+      function clickLogic() {
+        let mX = Math.floor((mouseX - border) / cellSize);
+        let mY = Math.floor((mouseY - headerSize - border) / cellSize);
 
         if (mX < 0 || mX >= game.width || mY < 0 || mY >= game.height) {
           return;
@@ -217,8 +231,20 @@
             // rButton.src = faceDead;
           }
         }
-        lastClick = mouseIsPressed || (touches.length != 0);
       }
+
+      function buttonLogic() {
+        console.log("ok butin");
+        let buttonXA = buttonX + buttonW;
+        let buttonYA = buttonY + buttonW;
+        let mX = mouseX - border;
+        let mY = mouseY - border;
+        if (mX > buttonX && mX < buttonXA && mY > buttonY && mY < buttonYA) {
+            console.log("new game");
+            newGame();
+        }
+      }
+
 
       function peekRadius(px, py, show) {
         for (let x = -1; x <= 1; x++) {
@@ -263,8 +289,17 @@
 
 
       function newGame() {
-        // rButton.src = faceNormal;
-        game = new MinesweeperRound(16, 30, 99);
+        let canvasHTML = document.getElementById('defaultCanvas0');
+        screenWidth = windowWidth - border*2;
+        screenHeight = windowHeight - border*2 - headerSize;
+        game = new MinesweeperRound(30, 16,99);
+        // if (screenConstraint) {
+        // rButton.style.width = `${cellSize}px`;
+        // rButton.style.height = `${cellSize}px`;
+        canvasHTML.parentElement.style.width = `${cellSize * game.width}px`; // adjust as needed
+        canvasHTML.parentElement.style.height = `${cellSize * game.height + headerSize}px`; // adjust as needed
+        resizeCanvas(cellSize * game.width + border * 2, cellSize * game.height + headerSize + border * 2);
+
       }
 
       function fitToContainer(canvas){
