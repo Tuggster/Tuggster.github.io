@@ -170,6 +170,13 @@ function periodChange() {
   }
 }
 
+function randomTeacher() {
+  var ddl = document.getElementById('teacher');
+  let i = Math.floor(Math.random() * ddl.options.length);
+  ddl.options[i].selected = true;
+  teacherChange();
+}
+
 function loadStudentSchedule(list, student) {
   let schedule = list.data.find(e => (e[0] == student))
 
