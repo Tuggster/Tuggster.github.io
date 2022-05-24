@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Classroom List Maker</title>
+    <style media="screen">
+      table, th, td {
+        border: 1px solid;
+      }
+
+      th, td {
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Enter teacher and period:</h1>
+    <select name="teacher" id="teacher" onchange="teacherChange()">
+
+    </select>
+
+    <select name="period" id="period" onchange="periodChange()">
+
+    </select>
+    <h3 id="clHeader">David Mejia's 1st Period</h3>
+
+    <table id="studentTable">
+
+    </table>
+    <script src="papaparse.min.js" charset="utf-8"></script>
+    <script src="list.js" charset="utf-8"></script>
+  </body>
+</html>
