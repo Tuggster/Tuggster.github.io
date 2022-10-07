@@ -133,7 +133,7 @@ class MinesweeperRound {
 
    drawHUD() {
      let cellAnti = 10/16 * cellSize;
-     if (!gameOver && this.hasStart && !document.hidden) {
+     if (!gameOver && this.hasStart && !document.hidden && document.hasFocus()) {
        this.gameTimer += deltaTime;
      }
 
