@@ -189,7 +189,7 @@
                 peekRadius(xStart, yStart, false);
               }
             } else if (lastClick == 1 && mouseIsPressed == 0) {
-              if (mouseButton === LEFT) {
+              if (mouseButton === LEFT && keyCode !== SHIFT) {
                 game.peekCell(mX, mY);
                 if (mX != xStart || mY != yStart) {
                   let cell = game.grid[xStart + yStart * game.width];
@@ -197,8 +197,8 @@
                     peekRadius(xStart, yStart, "reveal");
                 } else {
                   game.revealCell(mX, mY);
-                }
-              } else if (mouseButton === RIGHT) {
+                } 
+              } else if (mouseButton === RIGHT || keyCode === SHIFT) {
                 if (mX != xStart || mY != yStart) {
                   let cell = game.grid[xStart + yStart * game.width];
                   if (cell.revealed)
