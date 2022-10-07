@@ -189,17 +189,17 @@
                 peekRadius(xStart, yStart, false);
               }
             } else if (lastClick == 1 && mouseIsPressed == 0) {
-              if (mouseButton === LEFT && (keyCode !== SHIFT && keyIsPressed) || !keyIsPressed) {
+              if (mouseButton === LEFT && keyIsDown(SHIFT) || !keyIsPressed) {
                 game.peekCell(mX, mY);
-                if (mX != xStart || mY != yStart) {
+                if (mX != xStart || mY != yStart || keyIsDown(CONTROL)) {
                   let cell = game.grid[xStart + yStart * game.width];
                   if (cell.revealed)
                     peekRadius(xStart, yStart, "reveal");
                 } else {
                   game.revealCell(mX, mY);
                 } 
-              } else if (mouseButton === RIGHT || (keyCode === SHIFT && keyIsPressed)) {
-                if (mX != xStart || mY != yStart) {
+              } else if (mouseButton === RIGHT || keyIsDown(SHIFT)) {
+                if (mX != xStart || mY != yStart || keyIsDown(CONTROL)) {
                   let cell = game.grid[xStart + yStart * game.width];
                   if (cell.revealed)
                     peekRadius(xStart, yStart, "flag");
