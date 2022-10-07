@@ -189,7 +189,7 @@
                 peekRadius(xStart, yStart, false);
               }
             } else if (lastClick == 1 && mouseIsPressed == 0) {
-              if (mouseButton === LEFT && keyIsDown(SHIFT) || !keyIsPressed) {
+              if (mouseButton === LEFT && !keyIsDown(SHIFT)) {
                 game.peekCell(mX, mY);
                 if (mX != xStart || mY != yStart || keyIsDown(CONTROL)) {
                   let cell = game.grid[xStart + yStart * game.width];
