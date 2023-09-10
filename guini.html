@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guini's Kink Jars!</title>
+    <style>
+        table, th, td {
+            border: 1px solid;
+        }
+
+        .corner-buttons {
+            position:relative;
+            top: 0;
+            right: 0;
+        }
+
+        .jar-img {
+            width: 100%;
+            max-width: 100px;
+            height: 100%;
+            max-height: 100px;
+        }
+
+        .jar-container {
+            width: 100%;
+            max-width: 300px;
+            min-width: 100px;
+        }
+
+        .jar-txt {
+            text-align: center; 
+            vertical-align:text-bottom;
+        }
+
+        * {
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <table id="jarContainer" class="jar-container">
+
+    </table>
+
+    <script>
+        const table = document.getElementById("jarContainer");
+        const kinks = "anal, feet, oral fixation, orgasm control, orgasm denial, overstimulation, sex toys, size difference, exhibitionism, breeding, objectification, dom/sub, edging, mirrors, free use, voyerism, petplay, roleplay, body worship, bondage, degredation, teasing, pegging, double penetration, bratting, breastfeeding, cumplay, praise, choking, gagging, humiliation, spanking, rough sex, facefucking, 69, facesitting, ageplay, pain, sounding, fisting, public play, risky places, hypnosis, somnophilia, CNC, drugging, aphrodisiac, spit, torture";
+        const rowLen = 10;
+        const lowestRating = -1;
+        const highestRating = 6;
+
+        function setJar(index, level) {
+            let jar = document.getElementById(`jar-${index}`);
+            jar.src = `img/Filled${level}.png`;
+        }
+
+
+        function modJar(index, mod) {
+            let jar = document.getElementById(`jar-${index}`);
+            let jarSrc = jar.src;
+            let jarLevel = Number(jar.src.split("Filled")[1].split(".png")[0]);
+
+            console.log(jar.src);
+            console.log(jar.src.split("Filled")[1]);
+            console.log(jar.src.split("/")[1].split(".png")[0]);
+
+
+            console.log(jar, jarSrc, jarLevel);
+            console.log(index, mod);
+
+            if (jarLevel + mod >= lowestRating && jarLevel + mod <= highestRating) {
+                jarLevel = jarLevel + mod;
+                console.log(jarLevel)
+                jar.src = `img/Filled${jarLevel}.png`;
+            }
+        }
+
+        function populateTable() {
+            let cells = 0;
+            let kinkArray = kinks.split(',');
+            console.log(kinkArray);
+
+            let row = table.insertRow();
+            for (let i = 0; i < kinkArray.length; i++) {
+                if (cells >= rowLen) {
+                    cells = 0;
+                    row = table.insertRow();
+                }
+
+                let cell = row.insertCell();
+                cell.innerHTML = `<div class="jar-container"> <div class="corner-buttons"><button onclick="modJar(${i}, 1)">+</button><button onclick="setJar(${i}, -2)">?</button><button onclick="modJar(${i}, -1)">-</button></div> <img src="img/Filled0.png" id="jar-${i}" name="0" class="jar-img"></img> <p class="jar-txt">${kinkArray[i]}</p> </div>`;
+                cell.class = "jar-element";
+                // cell.onclick = function() {
+                //     console.log("BEANS!!!");
+                // }
+                cells++;
+            }
+        }
+
+        populateTable();
+    </script>
+
+
+</body>
+</html>
