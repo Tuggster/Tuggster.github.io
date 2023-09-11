@@ -5,32 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guini's Kink Jars!</title>
     <style>
-        table, th, td {
-            border: 1px solid;
+        table, tr {
+            border: 20px groove;
+        }
+
+        body {
+            background-color: rgb(55, 55, 55);
+        }
+
+        h1 {
+            color: whitesmoke;
+            font-size: 50pt;
+            text-align: center;
+        }
+
+        table {
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgb(220, 220, 220);
+        }
+
+        .button-container {
+            text-align: center;
+            left: 50%;
+            position: absolute;
+            transform: translateX(-50%);
+            width:75%;
+            overflow: visible;
+            padding: 1%;
+        }
+
+        .data-ctrl-button {
+            text-align: center;
+            font-size: 20pt;
+            width: 40%;
+            height: 50px;
+            
         }
 
         .corner-buttons {
             position:relative;
+            width: fit-content;
             top: 0;
-            right: 0;
+            left:50%;
+            transform: translateX(-50%) translateY(-100%);
+            top:1em;
+        }
+
+        .jar-container > .corner-buttons {
+            display: none;
+            visibility: hidden;
+        }
+
+        .jar-container:hover > .corner-buttons {
+            display: block;
+            visibility: visible;
+        }
+
+        .jar-container > .jar-txt {
+            display: block;
+            visibility: visible;
+        }
+
+        .jar-container:hover > .jar-txt {
+            display: none;
+            visibility: hidden;
         }
 
         .jar-img {
-            width: 100%;
-            max-width: 100px;
-            height: 100%;
-            max-height: 100px;
+            position: relative;
+            max-width: 90%;
+            max-height: 70%;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .jar-container {
             width: 100%;
             max-width: 300px;
             min-width: 100px;
+            height: 210px;
         }
 
         .jar-txt {
             text-align: center; 
-            vertical-align:text-bottom;
+            margin: 0;
         }
 
         * {
@@ -40,22 +100,53 @@
 </head>
 <body>
 
+    <h1>THE JARS!!!</h1>
+    <br>
     <table id="jarContainer" class="jar-container">
 
     </table>
 
+    <div class="button-container">
+        <button class="data-ctrl-button" onclick="alert(exportLevels())">Export Kinks</button>
+        <button class="data-ctrl-button" onclick="importLevels(prompt(&quot;Paste in your export data!&quot;))">Import Kinks</button>
+    </div>
+
     <script>
         const table = document.getElementById("jarContainer");
-        const kinks = "anal, feet, oral fixation, orgasm control, orgasm denial, overstimulation, sex toys, size difference, exhibitionism, breeding, objectification, dom/sub, edging, mirrors, free use, voyerism, petplay, roleplay, body worship, bondage, degredation, teasing, pegging, double penetration, bratting, breastfeeding, cumplay, praise, choking, gagging, humiliation, spanking, rough sex, facefucking, 69, facesitting, ageplay, pain, sounding, fisting, public play, risky places, hypnosis, somnophilia, CNC, drugging, aphrodisiac, spit, torture";
-        const rowLen = 13;
+        const kinks = "anal, feet, oral fixation, orgasm control, masturbation, orgasm denial, overstimulation, sex toys, size difference, exhibitionism, breeding, objectification, dom/sub, edging, mirrors, free use, vouyerism, petplay, roleplay, body worship, bondage, degredation, teasing, pegging, double penetration, bratting, breastfeeding, cumplay, praise, choking, gagging, humiliation, spanking, rough sex, facefucking, 69, facesitting, ageplay, hair pulling, pain, sounding, fisting, public play, risky places, hypnosis, somnophilia, CNC, drugging, aphrodisiac, spit, torture, collars, tentacles, costumes, cuckolding, lingerie, daddy/mommy, begging, cockwarming, blood";
+        let rowLen = 13;
         const lowestRating = -1;
         const highestRating = 6;
+        let kinkArray = kinks.split(',');
 
         function setJar(index, level) {
             let jar = document.getElementById(`jar-${index}`);
             jar.src = `img/Filled${level}.png`;
         }
 
+        function exportLevels() {
+            let expString = "";
+            for (let i = 0; i < kinkArray.length; i++) {
+                let level = getJar(i);
+                expString += String(level + 2);
+            }
+            return atob(expString);
+        }
+
+        function importLevels(importStr) {
+            importStr = btoa(importStr);
+            for (let i = 0; i < importStr.length; i++) {
+                let level = Number(importStr.charAt(i));
+                level -= 2;
+                setJar(i, level);
+            }
+        }
+
+        function getJar(index) {
+            let jar = document.getElementById(`jar-${index}`);
+            let jarLevel = Number(jar.src.split("Filled")[1].split(".png")[0]);
+            return jarLevel;
+        }
 
         function modJar(index, mod) {
             let jar = document.getElementById(`jar-${index}`);
@@ -78,8 +169,10 @@
         }
 
         function populateTable() {
+
+            rowLen = Math.round(innerWidth / 150);
+
             let cells = 0;
-            let kinkArray = kinks.split(',');
             console.log(kinkArray);
 
             let row = table.insertRow();
@@ -90,7 +183,7 @@
                 }
 
                 let cell = row.insertCell();
-                cell.innerHTML = `<div class="jar-container"> <div class="corner-buttons"><button onclick="modJar(${i}, 1)">+</button><button onclick="setJar(${i}, -2)">?</button><button onclick="modJar(${i}, -1)">-</button></div> <img src="img/Filled0.png" id="jar-${i}" name="0" class="jar-img"></img> <p class="jar-txt">${kinkArray[i]}</p> </div>`;
+                cell.innerHTML = `<div class="jar-container"> <img src="img/Filled0.png" id="jar-${i}" name="0" class="jar-img"></img> <div class="corner-buttons"><button onclick="modJar(${i}, 1)">+</button><button onclick="setJar(${i}, -2)">?</button><button onclick="modJar(${i}, -1)">-</button></div> <p class="jar-txt">${kinkArray[i]}</p> </div>`;
                 cell.class = "jar-element";
                 // cell.onclick = function() {
                 //     console.log("BEANS!!!");
